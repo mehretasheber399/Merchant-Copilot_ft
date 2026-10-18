@@ -1,0 +1,89 @@
+{
+  "common": {
+    "appName": "M-PESA Business Copilot",
+    "language": "Language",
+    "langEn": "EN",
+    "langAm": "አማ",
+    "logout": "Log out",
+    "offline": "You are offline.",
+    "loading": "Loading",
+    "close": "Close",
+    "notFound": "Page not found",
+    "goDashboard": "Go to dashboard",
+    "goLogin": "Go to sign in"
+  },
+  "nav": {
+    "sale": "Sale",
+    "items": "Items",
+    "dashboard": "Dashboard",
+    "insights": "Insights"
+  },
+  "auth": {
+    "title": "Sign in",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in"
+  },
+  "errors": {
+    "title": "Something went wrong",
+    "retry": "Try again",
+    "wrongCredentials": "Wrong email or password.",
+    "rateLimited": "Too many tries. Wait 15 minutes.",
+    "validation": "Check the form and try again.",
+    "network": "Cannot reach the server.",
+    "generic": "Something went wrong. Try again."
+  },
+  "sale": {
+    "title": "Sale"
+  },
+  "items": {
+    "title": "Items",
+    "search": "Search items",
+    "add": "Add item",
+    "edit": "Edit item",
+    "save": "Save",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "removeTitle": "Remove this item?",
+    "removeBody": "It stays out of the shop list.",
+    "name": "Name",
+    "nameAm": "Amharic name",
+    "price": "Price",
+    "cost": "Cost",
+    "stock": "Stock",
+    "threshold": "Low-stock alert",
+    "costHelp": "Add cost to unlock profit insights",
+    "stockHelp": "Add stock to unlock stock alerts",
+    "priceRequired": "Enter a price.",
+    "nameRequired": "Enter a name.",
+    "integerOnly": "Use a whole number.",
+    "empty": "No items yet.",
+    "useStarter": "Use starter list",
+    "noResults": "No matching items.",
+    "starterTitle": "Starter list",
+    "selectAll": "Select all",
+    "selectNone": "Select none",
+    "apply": "Add selected",
+    "createdSkipped": "Added {{created}}. Skipped {{skipped}}.",
+    "bulkCreated": "Added {{created}}.",
+    "bulkFailed": "Some items were not added.",
+    "starterEmpty": "The starter list is empty.",
+    "stockLow": "Low",
+    "stockOut": "Out",
+    "stockOk": "In stock",
+    "stockUntracked": "No stock"
+  },
+  "dashboard": {
+    "title": "Dashboard"
+  },
+  "insights": {
+    "title": "Insights"
+  },
+  "simulator": {
+    "title": "Customer phone",
+    "placeholder": "The customer confirms payment on this phone."
+  },
+  "reports": {
+    "title": "Reports"
+  }
+}

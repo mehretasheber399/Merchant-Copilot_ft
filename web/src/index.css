@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  html,
+  body {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: #f3eee6;
+    color: #1c1917;
+    font-family: 'Noto Sans Ethiopic', system-ui, sans-serif;
+  }
+
+  #root {
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  button,
+  a,
+  input {
+    touch-action: manipulation;
+  }
+
+  :focus-visible {
+    outline: 3px solid #1c1917;
+    outline-offset: 2px;
+  }
+}

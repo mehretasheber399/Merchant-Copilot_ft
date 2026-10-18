@@ -1,0 +1,96 @@
+{
+  "common": {
+    "appName": "M-PESA Business Copilot",
+    "language": "ቋንቋ",
+    "langEn": "EN",
+    "langAm": "አማ",
+    "logout": "ውጣ",
+    "offline": "ኢንተርኔት የለም።",
+    "loading": "በመጫን ላይ",
+    "close": "ዝጋ",
+    "notFound": "ገጹ አልተገኘም",
+    "goDashboard": "ወደ ማጠቃለያ",
+    "goLogin": "ወደ መግቢያ"
+  },
+  "nav": {
+    "sale": "ሽያጭ",
+    "items": "እቃዎች",
+    "dashboard": "ማጠቃለያ",
+    "// REVIEW dashboard": "ማጠቃለያ vs ዳሽቦርድ for Dashboard.",
+    "insights": "ግንዛቤ",
+    "// REVIEW insights": "ግንዛቤ vs ትንታኔ for Insights."
+  },
+  "auth": {
+    "title": "ግባ",
+    "email": "ኢሜይል",
+    "password": "የይለፍ ቃል",
+    "submit": "ግባ"
+  },
+  "errors": {
+    "title": "ችግር ተፈጥሯል",
+    "retry": "እንደገና ሞክር",
+    "wrongCredentials": "ኢሜይል ወይም የይለፍ ቃል ስህተት ነው።",
+    "rateLimited": "ብዙ ሙከራ። 15 ደቂቃ ይጠብቁ።",
+    "// REVIEW rateLimited": "Confirm this is natural for too many login attempts.",
+    "validation": "ቅጹን አርምተው እንደገና ይሞክሩ።",
+    "network": "አገልጋዩ አልተገኘም።",
+    "generic": "ችግር ተፈጥሯል። እንደገና ይሞክሩ።"
+  },
+  "sale": {
+    "title": "ሽያጭ"
+  },
+  "items": {
+    "title": "እቃዎች",
+    "search": "እቃ ፈልግ",
+    "add": "እቃ ጨምር",
+    "edit": "እቃ አርም",
+    "save": "አስቀምጥ",
+    "cancel": "ተወው",
+    "remove": "አስወግድ",
+    "removeTitle": "ይህን እቃ ያስወግዱ?",
+    "removeBody": "ከሱቅ ዝርዝር ይወጣል።",
+    "name": "ስም",
+    "nameAm": "የአማርኛ ስም",
+    "price": "ዋጋ",
+    "cost": "ወጪ",
+    "stock": "ክምችት",
+    "threshold": "የማሳሰቢያ መጠን",
+    "costHelp": "ወጪ ይጨምሩ፣ ትርፍ ይታያል።",
+    "stockHelp": "ክምችት ይጨምሩ፣ ማሳሰቢያ ይመጣል።",
+    "priceRequired": "ዋጋ ያስገቡ።",
+    "nameRequired": "ስም ያስገቡ።",
+    "integerOnly": "ሙሉ ቁጥር ይጠቀሙ።",
+    "empty": "እቃ የለም።",
+    "useStarter": "የመጀመሪያ ዝርዝር ተጠቀም",
+    "noResults": "የሚመሳሰል እቃ የለም።",
+    "starterTitle": "የመጀመሪያ ዝርዝር",
+    "selectAll": "ሁሉንም ምረጥ",
+    "selectNone": "ምርጫ አንሳ",
+    "apply": "የተመረጡትን ጨምር",
+    "createdSkipped": "{{created}} ተጨምሯል። {{skipped}} ተዘሏል።",
+    "bulkCreated": "{{created}} ተጨምሯል።",
+    "bulkFailed": "አንዳንድ እቃዎች አልተጨመሩም።",
+    "starterEmpty": "የመጀመሪያ ዝርዝር ባዶ ነው።",
+    "// REVIEW starterEmpty": "Confirm this starter-list wording with a native speaker.",
+    "stockLow": "ዝቅተኛ",
+    "stockOut": "አልቋል",
+    "stockOk": "አለ",
+    "stockUntracked": "አልተቆጠረም",
+    "// REVIEW stockUntracked": "አልተቆጠረም for untracked stock."
+  },
+  "dashboard": {
+    "title": "ማጠቃለያ",
+    "// REVIEW title": "Same question as nav.dashboard."
+  },
+  "insights": {
+    "title": "ግንዛቤ",
+    "// REVIEW title": "Same question as nav.insights."
+  },
+  "simulator": {
+    "title": "የደንበኛ ስልክ",
+    "placeholder": "ደንበኛው ክፍያውን በዚህ ስልክ ያረጋግጣል።"
+  },
+  "reports": {
+    "title": "ሪፖርቶች"
+  }
+}
