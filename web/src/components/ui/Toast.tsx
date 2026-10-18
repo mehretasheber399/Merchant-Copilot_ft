@@ -19,7 +19,8 @@ export function ToastViewport() {
     pathname === '/sale' ||
     pathname === '/items' ||
     pathname === '/dashboard' ||
-    pathname === '/insights';
+    pathname === '/insights' ||
+    pathname === '/reports';
 
   return (
     <div

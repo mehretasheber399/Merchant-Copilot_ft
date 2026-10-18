@@ -15,6 +15,7 @@ import { InsightsPage } from './pages/InsightsPage';
 import { ItemsPage } from './pages/ItemsPage';
 import { LoginPage } from './pages/LoginPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { ReportsPage } from './pages/ReportsPage';
 import { SalePage } from './pages/SalePage';
 import { queryClient } from './queryClient';
 import { useAuthStore, validateSession } from './store/auth';
@@ -38,8 +39,11 @@ function SessionEffects() {
 
   useEffect(() => {
     setUnauthorizedHandler(() => {
+      const hadSession = Boolean(useAuthStore.getState().token);
       useAuthStore.getState().clearSession();
-      navigate(loginPathFor(window.location.pathname, window.location.search), { replace: true });
+      const base = loginPathFor(window.location.pathname, window.location.search);
+      const join = base.includes('?') ? '&' : '?';
+      navigate(hadSession ? `${base}${join}expired=1` : base, { replace: true });
     });
     void validateSession();
   }, [navigate]);
@@ -78,6 +82,7 @@ export function App() {
                 <Route path="/sale" element={<SalePage />} />
                 <Route path="/items" element={<ItemsPage />} />
                 <Route path="/insights" element={<InsightsPage />} />
+                <Route path="/reports" element={<ReportsPage />} />
               </Route>
               <Route path="*" element={<NotFoundPage />} />
             </Routes>

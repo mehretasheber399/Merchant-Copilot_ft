@@ -71,6 +71,11 @@ export function LoginPage() {
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-[420px] flex-col justify-center bg-surface px-4 py-8">
       <h1 className="text-2xl font-semibold">{t('auth:title')}</h1>
+      {params.get('expired') === '1' ? (
+        <p role="status" className="mt-3 font-semibold text-warning">
+          {t('auth:expired')}
+        </p>
+      ) : null}
       <form className="mt-6 grid gap-4" onSubmit={onSubmit}>
         <Input
           label={t('auth:email')}

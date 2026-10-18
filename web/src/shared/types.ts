@@ -218,15 +218,35 @@ export interface InsightEvidence {
   transactions: EvidenceTransaction[];
 }
 
+export interface MappingMixPoint {
+  amount: number;
+  pct: number | null;
+}
+
+export interface ReportInsight {
+  type: InsightType;
+  priority: number;
+  what: Bilingual;
+  why: Bilingual;
+  check: Bilingual;
+  nextAction: Bilingual;
+  confidence: InsightConfidence;
+}
+
 export interface ReportSummary {
   merchant: { id: string; businessName: string; branch: string; type: string };
   period: { from: string; to: string };
-  summary: Record<string, string | number | null>;
-  hourly: HourBucket[];
+  summary: DashboardView;
+  hourly: HoursView;
   topProducts: TopProduct[];
   lowStock: StockItem[];
-  mappingMix: { cart: number; manual: number; autoSuggested: number; unmapped: number };
-  insights: InsightView[];
+  mappingMix: {
+    cart: MappingMixPoint;
+    manual: MappingMixPoint;
+    autoSuggested: MappingMixPoint;
+    unmapped: MappingMixPoint;
+  };
+  insights: ReportInsight[];
   generatedAt: string;
 }
 

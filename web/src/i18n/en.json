@@ -10,7 +10,11 @@
     "close": "Close",
     "notFound": "Page not found",
     "goDashboard": "Go to dashboard",
-    "goLogin": "Go to sign in"
+    "goLogin": "Go to sign in",
+    "menu": "Menu",
+    "reports": "Reports",
+    "install": "Add to home screen",
+    "installHint": "Add this app to your phone's home screen."
   },
   "nav": {
     "sale": "Sale",
@@ -22,7 +26,8 @@
     "title": "Sign in",
     "email": "Email",
     "password": "Password",
-    "submit": "Sign in"
+    "submit": "Sign in",
+    "expired": "Your session expired. Sign in again."
   },
   "errors": {
     "title": "Something went wrong",
@@ -208,6 +213,42 @@
     "secondsLeft": "{{count}}s left"
   },
   "reports": {
-    "title": "Reports"
+    "title": "Reports",
+    "csv": "Download CSV",
+    "pdf": "Download PDF",
+    "downloadError": "Download failed. Try again.",
+    "collections": "Collections",
+    "transactions": "Transactions",
+    "average": "Average sale",
+    "topProducts": "Top items",
+    "qty": "Qty {{count}}",
+    "emptyProducts": "No item sales in this period.",
+    "lowStock": "Low stock",
+    "emptyLow": "No low-stock items.",
+    "stockOut": "Out",
+    "stockLow": "Low",
+    "stockOk": "In stock",
+    "mix": "How sales were matched",
+    "cart": "From the cart",
+    "manual": "Matched by you",
+    "autoSuggested": "Estimate",
+    "unmapped": "Needs review"
+  },
+  "demo": {
+    "title": "Demo",
+    "reset": "Reset demo data",
+    "resetAsk": "Replace the shop with fresh demo data?",
+    "resetYes": "Reset now",
+    "cancel": "Cancel",
+    "resetDone": "Demo data reset. Today {{total}}",
+    "simulateSale": "Simulate sale",
+    "saleReady": "Sale requested {{amount}}",
+    "direct": "Simulate direct payment",
+    "paymentReady": "Payment {{amount}} needs review",
+    "drain": "Drain stock",
+    "drainPick": "Choose an item",
+    "drained": "Stock left: {{count}}",
+    "emptyProducts": "No items to drain.",
+    "unavailable": "Demo tools are off on the server."
   }
 }

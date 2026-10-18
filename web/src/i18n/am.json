@@ -10,7 +10,11 @@
     "close": "ዝጋ",
     "notFound": "ገጹ አልተገኘም",
     "goDashboard": "ወደ ማጠቃለያ",
-    "goLogin": "ወደ መግቢያ"
+    "goLogin": "ወደ መግቢያ",
+    "menu": "ምናሌ",
+    "reports": "ሪፖርት",
+    "install": "ወደ መነሻ ጨምር",
+    "installHint": "ይህን መተግበሪያ ወደ ስልክ መነሻ ይጨምሩ።"
   },
   "nav": {
     "sale": "ሽያጭ",
@@ -24,7 +28,8 @@
     "title": "ግባ",
     "email": "ኢሜይል",
     "password": "የይለፍ ቃል",
-    "submit": "ግባ"
+    "submit": "ግባ",
+    "expired": "ክፍለ ጊዜዎ አልቋል። እንደገና ይግቡ።"
   },
   "errors": {
     "title": "ችግር ተፈጥሯል",
@@ -228,6 +233,45 @@
     "secondsLeft": "{{count}} ሰከንድ ቀርቷል"
   },
   "reports": {
-    "title": "ሪፖርቶች"
+    "title": "ሪፖርት",
+    "csv": "CSV አውርድ",
+    "pdf": "PDF አውርድ",
+    "downloadError": "ማውረድ አልተሳካም። እንደገና ይሞክሩ።",
+    "collections": "ጠቅላላ",
+    "transactions": "ግብይቶች",
+    "average": "አማካይ ሽያጭ",
+    "topProducts": "ከፍተኛ እቃዎች",
+    "qty": "ብዛት {{count}}",
+    "emptyProducts": "በዚህ ጊዜ የእቃ ሽያጭ የለም።",
+    "lowStock": "አነስተኛ ክምችት",
+    "emptyLow": "አነስተኛ ክምችት የለም።",
+    "stockOut": "አልቋል",
+    "stockLow": "አነስተኛ",
+    "stockOk": "በቂ ነው",
+    "mix": "ሽያጭ እንዴት ተዛመደ",
+    "cart": "ከጋሪ",
+    "manual": "እርስዎ የዛመዱት",
+    "autoSuggested": "ግምት",
+    "unmapped": "ምርመራ ይፈልጋል",
+    "// REVIEW mix": "Confirm the matching-mix labels with a native speaker."
+  },
+  "demo": {
+    "title": "ሙከራ",
+    "reset": "የሙከራ መረጃ አድስ",
+    "resetAsk": "ሱቁ በአዲስ የሙከራ መረጃ ይተካ?",
+    "// REVIEW resetAsk": "Confirm this reset question with a native speaker.",
+    "resetYes": "አሁን አድስ",
+    "cancel": "ይቅር",
+    "resetDone": "የሙከራ መረጃ ታድሷል። ዛሬ {{total}}",
+    "simulateSale": "ሽያጭ አስመስል",
+    "saleReady": "የሽያጭ ጥያቄ {{amount}}",
+    "direct": "ቀጥታ ክፍያ አስመስል",
+    "paymentReady": "ክፍያ {{amount}} ምርመራ ይፈልጋል",
+    "drain": "ክምችት አጣጥ",
+    "// REVIEW drain": "Confirm this drain-stock label with a native speaker.",
+    "drainPick": "እቃ ይምረጡ",
+    "drained": "ቀሪ ክምችት፡ {{count}}",
+    "emptyProducts": "የሚጣጥ እቃ የለም።",
+    "unavailable": "የሙከራ መሳሪያዎች በአገልጋዩ ጠፍተዋል።"
   }
 }

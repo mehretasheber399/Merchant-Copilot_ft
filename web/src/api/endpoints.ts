@@ -230,7 +230,7 @@ export function getReportSummary(range: DashboardRange): Promise<ReportSummary> 
 }
 
 export function exportReport(range: DashboardRange, format: 'csv' | 'pdf') {
-  return downloadAuthorized(`/reports/export${toQuery({ range, format })}`);
+  return downloadAuthorized(`/reports/export${toQuery({ range, format })}`, 60_000);
 }
 
 export function resetDemo(): Promise<DemoResetResult> {

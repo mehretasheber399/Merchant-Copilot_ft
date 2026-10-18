@@ -147,9 +147,12 @@ export function filenameFromDisposition(header: string | null): string {
   return plain?.[1] ?? 'download';
 }
 
-export async function downloadAuthorized(path: string): Promise<{ blob: Blob; filename: string }> {
+export async function downloadAuthorized(
+  path: string,
+  timeoutMs = REQUEST_TIMEOUT_MS,
+): Promise<{ blob: Blob; filename: string }> {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   const token = readStoredSession()?.token;
   try {
     const response = await fetch(`${config.apiBaseUrl}${path}`, {

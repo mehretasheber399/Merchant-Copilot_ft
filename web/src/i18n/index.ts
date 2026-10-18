@@ -15,6 +15,7 @@ export const namespaces = [
   'insights',
   'simulator',
   'reports',
+  'demo',
 ] as const;
 
 void i18n.use(initReactI18next).init({
