@@ -12,15 +12,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        canvas: '#F3EEE6',
-        surface: '#FFFCF7',
-        ink: '#1C1917',
-        muted: '#44403C',
-        line: '#8C7B68',
+        canvas: '#F5F7F6',
+        surface: '#FFFFFF',
+        ink: '#0F1F17',
+        muted: '#5B6B63',
+        line: '#E3EAE6',
         primary: {
           DEFAULT: '#006B3C',
           bright: '#00A650',
-          soft: '#E7F6EE',
+          soft: '#E8F7EF',
           foreground: '#FFFFFF',
         },
         success: {
@@ -29,23 +29,23 @@ const config: Config = {
         },
         warning: {
           DEFAULT: '#92400E',
-          soft: '#FFFBEB',
+          soft: '#FEF3C7',
         },
         danger: {
           DEFAULT: '#991B1B',
-          soft: '#FEF2F2',
+          soft: '#FEE2E2',
         },
       },
       borderRadius: {
-        control: '0.75rem',
-        card: '1rem',
+        control: '1rem',
+        card: '1.5rem',
       },
       boxShadow: {
-        card: '0 1px 2px rgba(28, 25, 23, 0.06), 0 8px 24px rgba(28, 25, 23, 0.06)',
-        shell: '0 0 0 1px rgba(28, 25, 23, 0.06), 0 12px 40px rgba(28, 25, 23, 0.08)',
+        card: '0 1px 2px rgba(15, 31, 23, 0.04), 0 8px 24px -8px rgba(15, 31, 23, 0.12)',
+        shell: '0 12px 32px -8px rgba(0, 107, 60, 0.35)',
       },
       fontFamily: {
-        sans: ['"Noto Sans Ethiopic"', 'system-ui', 'sans-serif'],
+        sans: ['ui-sans-serif', 'system-ui', '"Noto Sans Ethiopic"', 'sans-serif'],
       },
       minHeight: {
         control: '48px',

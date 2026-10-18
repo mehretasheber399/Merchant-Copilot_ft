@@ -7,6 +7,7 @@ import { formatMoney } from '../utils/format';
 import type { SaleFailure } from '../features/sale/errors';
 import { cartTotal, isFinalStatus } from '../features/sale/logic';
 import { SaleCatalog } from '../features/sale/SaleCatalog';
+import { SaleHero } from '../features/sale/SaleHero';
 import { SaleResult } from '../features/sale/SaleResult';
 import { useSaleScreen } from '../features/sale/useSaleScreen';
 import { WaitingSale } from '../features/sale/WaitingSale';
@@ -39,8 +40,13 @@ export function SalePage() {
   const showSale = Boolean(screen.requestId);
 
   return (
-    <section className={screen.lines.length > 0 && !showSale ? 'pb-24' : undefined}>
-      {!showSale ? <h1 className="mb-4 text-2xl font-semibold">{t('title')}</h1> : null}
+    <section className={screen.lines.length > 0 && !showSale ? 'pb-36' : undefined}>
+      {!showSale ? (
+        <>
+          <h1 className="mb-4 text-2xl font-extrabold tracking-tight">{t('title')}</h1>
+          <SaleHero />
+        </>
+      ) : null}
       {!screen.online && !screen.products.data ? (
         <p role="status" className="font-semibold text-warning">
           {i18n.t('common:offline')}
@@ -93,9 +99,11 @@ export function SalePage() {
             </Button>
           </div>
           {screen.lines.length > 0 ? (
-            <div className="fixed bottom-[calc(56px+env(safe-area-inset-bottom))] left-1/2 z-20 flex min-h-nav w-full max-w-[420px] -translate-x-1/2 items-center justify-between border-t border-line bg-surface px-4">
-              <span className="font-semibold">{t('total')}</span>
-              <span className="font-semibold">{formatMoney(total, locale)}</span>
+            <div className="fixed bottom-[calc(92px+env(safe-area-inset-bottom))] left-1/2 z-20 flex h-14 w-[calc(100%-2rem)] max-w-[388px] -translate-x-1/2 items-center justify-between rounded-[20px] bg-ink px-5 text-primary-foreground shadow-shell">
+              <span className="text-sm font-semibold">{t('total')}</span>
+              <span className="text-xl font-extrabold tabular-nums">
+                {formatMoney(total, locale)}
+              </span>
             </div>
           ) : null}
         </>

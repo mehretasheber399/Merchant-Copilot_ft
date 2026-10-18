@@ -33,10 +33,10 @@ export function TransactionFeed({
 }) {
   const { t } = useTranslation('dashboard');
   return (
-    <section aria-label={t('feed')}>
-      <h2 className="text-lg font-semibold">{t('feed')}</h2>
-      {rows.length === 0 ? <p className="mt-2">{t('emptyFeed')}</p> : null}
-      <ul className="mt-2 grid gap-2">
+    <section aria-label={t('feed')} className="rounded-card border border-line bg-surface p-4">
+      <h2 className="text-base font-bold">{t('feed')}</h2>
+      {rows.length === 0 ? <p className="mt-2 text-muted">{t('emptyFeed')}</p> : null}
+      <ul className="mt-1">
         {rows.map((row) => {
           const kind = mappingKind(row.mappingSource);
           const flashing = flashIds.includes(row.id);
@@ -44,13 +44,13 @@ export function TransactionFeed({
             <li
               key={row.id}
               data-flash={flashing ? 'true' : undefined}
-              className={`rounded-card border border-line px-3 py-2 ${flashing ? 'bg-primary-soft' : 'bg-surface'}`}
+              className={`border-b border-line py-3 last:border-b-0 ${flashing ? 'rounded-2xl bg-primary-soft px-3' : ''}`}
             >
               <div className="flex items-start justify-between gap-3">
-                <p className="font-semibold">{formatMoney(row.amount, locale)}</p>
-                <span
-                  className={`rounded-control px-2 py-1 text-sm font-semibold ${badgeClass[kind]}`}
-                >
+                <p className="font-extrabold tabular-nums text-primary">
+                  {formatMoney(row.amount, locale)}
+                </p>
+                <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${badgeClass[kind]}`}>
                   {t(badgeKey[kind])}
                 </span>
               </div>

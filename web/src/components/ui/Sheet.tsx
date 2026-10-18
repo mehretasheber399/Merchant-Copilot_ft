@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, type ReactNode, type TouchEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
 const FOCUSABLE =
@@ -9,12 +10,14 @@ export function Sheet({
   title,
   onClose,
   swipeClose = false,
+  preferField = true,
   children,
 }: {
   open: boolean;
   title: string;
   onClose: () => void;
   swipeClose?: boolean;
+  preferField?: boolean;
   children: ReactNode;
 }) {
   const { t } = useTranslation('common');
@@ -52,7 +55,8 @@ export function Sheet({
     const panel = panelRef.current;
     const firstInput = panel?.querySelector<HTMLElement>('input, select, textarea');
     const first = panel?.querySelector<HTMLElement>(FOCUSABLE);
-    (firstInput ?? first)?.focus();
+    const target = preferField ? (firstInput ?? first) : first;
+    target?.focus(preferField ? undefined : { preventScroll: true });
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -83,14 +87,14 @@ export function Sheet({
       document.removeEventListener('keydown', onKeyDown);
       previouslyFocused?.focus();
     };
-  }, [open]);
+  }, [open, preferField]);
 
   if (!open) {
     return null;
   }
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40">
+  return createPortal(
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/50 backdrop-blur-sm">
       <button
         type="button"
         className="absolute inset-0"
@@ -102,19 +106,19 @@ export function Sheet({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="relative z-10 max-h-[92dvh] w-full max-w-[420px] overflow-y-auto rounded-t-card bg-surface px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-shell"
+        className="relative z-10 max-h-[92dvh] w-full max-w-[420px] overflow-y-auto rounded-t-[1.75rem] bg-surface px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 shadow-shell"
       >
         <div onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
           {swipeClose ? (
             <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-line" aria-hidden="true" />
           ) : null}
           <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 id={titleId} className="text-xl font-semibold">
+            <h2 id={titleId} className="text-xl font-extrabold tracking-tight">
               {title}
             </h2>
             <button
               type="button"
-              className="inline-flex min-h-12 min-w-12 items-center justify-center text-sm font-semibold"
+              className="inline-flex min-h-12 items-center justify-center rounded-full bg-canvas px-4 text-sm font-bold text-muted"
               onClick={onClose}
             >
               {t('close')}
@@ -123,6 +127,7 @@ export function Sheet({
         </div>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

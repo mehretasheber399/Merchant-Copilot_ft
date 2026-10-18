@@ -40,7 +40,10 @@
   },
   "sale": {
     "title": "Sale",
+    "heroTitle": "Every santim counts",
+    "heroCaption": "ሳንቲም · Santim",
     "search": "Search items",
+    "all": "All",
     "add": "Add",
     "decrease": "Decrease {{name}}",
     "increase": "Increase {{name}}",

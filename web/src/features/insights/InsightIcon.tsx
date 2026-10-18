@@ -9,13 +9,19 @@ const paths: Record<InsightType, string> = {
   peakPeriod: 'M5 18V10M10 18V6M15 18v-5M20 18V8',
 };
 
-export function InsightIcon({ type }: { type: InsightType | undefined }) {
+export function InsightIcon({
+  type,
+  className = 'h-10 w-10 shrink-0 text-primary',
+}: {
+  type: InsightType | undefined;
+  className?: string;
+}) {
   const d = type ? paths[type] : paths.revenueVsBaseline;
   return (
     <svg
       viewBox="0 0 24 24"
       aria-hidden="true"
-      className="h-10 w-10 shrink-0 text-primary"
+      className={className}
       fill="none"
       stroke="currentColor"
       strokeWidth="1.8"

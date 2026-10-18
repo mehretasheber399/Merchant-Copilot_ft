@@ -36,11 +36,11 @@ export function ItemsPage() {
 
   return (
     <section>
-      <h1 className="text-2xl font-semibold">{t('title')}</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight">{t('title')}</h1>
       <label className="mt-4 grid gap-1 text-sm font-semibold">
         {t('search')}
         <input
-          className="min-h-control rounded-control border border-line bg-surface px-3 text-base font-normal"
+          className="min-h-[52px] rounded-2xl border border-line bg-surface px-4 text-base font-medium"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />

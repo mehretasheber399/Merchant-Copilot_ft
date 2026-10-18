@@ -52,7 +52,7 @@ export function ReviewList({
 
   return (
     <section aria-label={t('review')} className="grid gap-3">
-      <h2 className="text-lg font-semibold">{t('review')}</h2>
+      <h2 className="text-base font-bold">{t('review')}</h2>
       {!online && !review.data ? (
         <p role="status" className="font-semibold text-warning">
           {i18n.t('common:offline')}
@@ -86,63 +86,71 @@ export function ReviewList({
                   ? messageFor(dismissErrorKey)
                   : null;
           return (
-            <li key={row.id} className="min-w-0 rounded-card border border-line bg-surface p-3">
-              <p className="font-semibold">{formatMoney(row.amount, locale)}</p>
-              <p className="text-sm text-muted">{formatTime(row.timestamp, locale)}</p>
-              {row.phoneMasked ? <p className="text-sm">{row.phoneMasked}</p> : null}
-              {suggestion ? (
-                <ul className="mt-2 text-sm">
-                  {suggestion.items.map((item) => (
-                    <li key={`${row.id}-${item.productId}`}>
-                      {t('line', { name: item.name, qty: item.qty })}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="mt-2">{t('noMatch')}</p>
-              )}
-              {error ? (
-                <p role="alert" className="mt-2 font-semibold text-danger">
-                  {error}
+            <li
+              key={row.id}
+              className="min-w-0 overflow-hidden rounded-card border border-line bg-surface"
+            >
+              <div className="h-1.5 bg-gradient-to-r from-primary-bright to-[#FFB703]" />
+              <div className="p-4">
+                <p className="font-extrabold tabular-nums text-primary">
+                  {formatMoney(row.amount, locale)}
                 </p>
-              ) : null}
-              {asking ? (
-                <div className="mt-3 grid gap-2">
-                  <p>{t('dismissAsk')}</p>
-                  <Button
-                    variant="danger"
-                    loading={dismiss.isPending && dismiss.variables === row.id}
-                    onClick={() => {
-                      setAskingId(null);
-                      dismiss.mutate(row.id);
-                    }}
-                  >
-                    {t('dismiss')}
-                  </Button>
-                  <Button variant="secondary" onClick={() => setAskingId(null)}>
-                    {t('cancel')}
-                  </Button>
-                </div>
-              ) : (
-                <div className="mt-3 grid gap-2">
-                  {suggestion ? (
+                <p className="text-sm text-muted">{formatTime(row.timestamp, locale)}</p>
+                {row.phoneMasked ? <p className="text-sm">{row.phoneMasked}</p> : null}
+                {suggestion ? (
+                  <ul className="mt-2 text-sm">
+                    {suggestion.items.map((item) => (
+                      <li key={`${row.id}-${item.productId}`}>
+                        {t('line', { name: item.name, qty: item.qty })}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-2">{t('noMatch')}</p>
+                )}
+                {error ? (
+                  <p role="alert" className="mt-2 font-semibold text-danger">
+                    {error}
+                  </p>
+                ) : null}
+                {asking ? (
+                  <div className="mt-3 grid gap-2">
+                    <p>{t('dismissAsk')}</p>
                     <Button
-                      loading={confirm.isPending && confirm.variables?.id === row.id}
-                      onClick={() =>
-                        confirm.mutate({ id: row.id, items: suggestionLines(suggestion) })
-                      }
+                      variant="danger"
+                      loading={dismiss.isPending && dismiss.variables === row.id}
+                      onClick={() => {
+                        setAskingId(null);
+                        dismiss.mutate(row.id);
+                      }}
                     >
-                      {t('confirm')}
+                      {t('dismiss')}
                     </Button>
-                  ) : null}
-                  <Button variant="secondary" onClick={() => onEdit(row.id)}>
-                    {t('edit')}
-                  </Button>
-                  <Button variant="secondary" onClick={() => setAskingId(row.id)}>
-                    {t('dismiss')}
-                  </Button>
-                </div>
-              )}
+                    <Button variant="secondary" onClick={() => setAskingId(null)}>
+                      {t('cancel')}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="mt-3 grid gap-2">
+                    {suggestion ? (
+                      <Button
+                        loading={confirm.isPending && confirm.variables?.id === row.id}
+                        onClick={() =>
+                          confirm.mutate({ id: row.id, items: suggestionLines(suggestion) })
+                        }
+                      >
+                        {t('confirm')}
+                      </Button>
+                    ) : null}
+                    <Button variant="secondary" onClick={() => onEdit(row.id)}>
+                      {t('edit')}
+                    </Button>
+                    <Button variant="secondary" onClick={() => setAskingId(row.id)}>
+                      {t('dismiss')}
+                    </Button>
+                  </div>
+                )}
+              </div>
             </li>
           );
         })}

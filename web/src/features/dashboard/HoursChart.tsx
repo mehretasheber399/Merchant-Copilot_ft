@@ -38,8 +38,11 @@ export function HoursChart({
   const points = chartBuckets(buckets);
   const peakCount = points.filter((bucket) => isPeakHour(bucket.hour, peaks)).length;
   return (
-    <section aria-label={t('hours')} className="min-w-0">
-      <h2 className="text-lg font-semibold">{t('hours')}</h2>
+    <section
+      aria-label={t('hours')}
+      className="min-w-0 rounded-card border border-line bg-surface p-4"
+    >
+      <h2 className="text-base font-bold">{t('hours')}</h2>
       <p className="mt-1 text-sm text-muted">{t('peakNote')}</p>
       <div
         className="mt-3 h-[200px] min-w-0"
@@ -52,14 +55,14 @@ export function HoursChart({
             <XAxis
               dataKey="label"
               interval={3}
-              tick={{ fontSize: 11, fill: '#44403C' }}
+              tick={{ fontSize: 11, fill: '#5B6B63' }}
               tickLine={false}
               axisLine={false}
               height={32}
             />
             <YAxis
               width={36}
-              tick={{ fontSize: 11, fill: '#44403C' }}
+              tick={{ fontSize: 11, fill: '#5B6B63' }}
               tickLine={false}
               axisLine={false}
             />

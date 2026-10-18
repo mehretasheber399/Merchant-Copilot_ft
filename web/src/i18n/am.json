@@ -43,7 +43,10 @@
   },
   "sale": {
     "title": "ሽያጭ",
+    "heroTitle": "እያንዳንዱ ሳንቲም ይቆጠራል",
+    "heroCaption": "ሳንቲም · Santim",
     "search": "እቃ ፈልግ",
+    "all": "ሁሉ",
     "add": "ጨምር",
     "decrease": "{{name}} ቀንስ",
     "increase": "{{name}} ጨምር",

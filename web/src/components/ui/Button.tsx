@@ -8,9 +8,9 @@ type ButtonProps = {
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'>;
 
 const variants = {
-  primary: 'bg-primary text-primary-foreground',
-  secondary: 'border border-line bg-surface text-ink',
-  danger: 'bg-danger text-primary-foreground',
+  primary: 'bg-primary text-primary-foreground shadow-shell active:scale-[0.98]',
+  secondary: 'border border-line bg-surface text-ink shadow-card active:scale-[0.98]',
+  danger: 'bg-danger text-primary-foreground shadow-card active:scale-[0.98]',
 };
 
 export function Button({
@@ -25,7 +25,7 @@ export function Button({
     <button
       type={type}
       {...props}
-      className={`inline-flex min-h-control w-full items-center justify-center gap-2 rounded-control px-4 text-base font-semibold disabled:opacity-60 ${variants[variant]}`}
+      className={`inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-[18px] px-4 text-base font-bold transition-transform disabled:scale-100 disabled:opacity-60 disabled:shadow-none ${variants[variant]}`}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
     >

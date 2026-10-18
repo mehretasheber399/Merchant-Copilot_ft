@@ -6,11 +6,11 @@ export function NotFoundPage() {
   const { t } = useTranslation('common');
   const token = useAuthStore((state) => state.token);
   return (
-    <div className="mx-auto grid min-h-dvh w-full max-w-[420px] content-center gap-4 bg-surface px-4">
-      <h1 className="text-2xl font-semibold">{t('notFound')}</h1>
+    <div className="mx-auto grid min-h-dvh w-full max-w-[420px] content-center gap-4 bg-canvas px-4">
+      <h1 className="text-2xl font-extrabold tracking-tight">{t('notFound')}</h1>
       <Link
         to={token ? '/dashboard' : '/login'}
-        className="inline-flex min-h-control items-center justify-center rounded-control bg-primary px-4 font-semibold text-primary-foreground"
+        className="inline-flex min-h-14 items-center justify-center rounded-[18px] bg-primary px-4 font-bold text-primary-foreground shadow-shell"
       >
         {token ? t('goDashboard') : t('goLogin')}
       </Link>

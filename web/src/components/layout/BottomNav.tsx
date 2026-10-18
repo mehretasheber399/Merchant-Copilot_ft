@@ -13,20 +13,26 @@ export function BottomNav() {
   const { t } = useTranslation('nav');
 
   return (
-    <nav className="fixed bottom-0 left-1/2 z-30 w-full max-w-[420px] -translate-x-1/2 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)]">
-      <ul className="grid h-nav grid-cols-4">
+    <nav className="fixed bottom-[calc(12px+env(safe-area-inset-bottom))] left-1/2 z-30 flex h-16 w-[calc(100%-2rem)] max-w-[388px] -translate-x-1/2 items-center justify-around rounded-full bg-ink px-2 shadow-shell">
+      <ul className="grid h-full w-full grid-cols-4">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
-            <li key={tab.to}>
+            <li key={tab.to} className="flex">
               <NavLink
                 to={tab.to}
-                className={({ isActive }) =>
-                  `flex h-nav flex-col items-center justify-center gap-0.5 px-1 text-center text-xs font-semibold leading-tight ${isActive ? 'bg-primary-soft text-primary' : 'text-muted'}`
-                }
+                className="flex flex-1 items-center justify-center text-white/75"
               >
-                <Icon />
-                <span>{t(tab.labelKey)}</span>
+                {({ isActive }) => (
+                  <span
+                    className={`flex h-12 min-w-12 items-center justify-center gap-2 rounded-full px-3 ${isActive ? 'bg-primary text-primary-foreground shadow-[0_0_0_6px_rgba(0,107,60,0.28)]' : ''}`}
+                  >
+                    <Icon />
+                    <span className={isActive ? 'text-sm font-semibold' : 'sr-only'}>
+                      {t(tab.labelKey)}
+                    </span>
+                  </span>
+                )}
               </NavLink>
             </li>
           );

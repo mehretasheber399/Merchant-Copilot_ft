@@ -86,8 +86,11 @@ export function DemoPanel({ onClose }: { onClose: () => void }) {
   const catalog = products.data ?? [];
 
   return (
-    <section aria-label={t('title')} className="grid gap-3 rounded-card border border-line p-3">
-      <h2 className="text-lg font-semibold">{t('title')}</h2>
+    <section
+      aria-label={t('title')}
+      className="grid gap-3 rounded-card border border-line bg-surface p-4"
+    >
+      <h2 className="text-base font-bold">{t('title')}</h2>
       {confirmReset ? (
         <div className="grid gap-2">
           <p>{t('resetAsk')}</p>
@@ -122,7 +125,7 @@ export function DemoPanel({ onClose }: { onClose: () => void }) {
       <label className="grid gap-1 text-sm font-semibold">
         {t('drainPick')}
         <select
-          className="min-h-control w-full rounded-control border border-line bg-surface px-3 font-normal"
+          className="min-h-[52px] w-full rounded-2xl border border-line bg-canvas px-4 font-medium"
           value={productId}
           onChange={(event) => setProductId(event.target.value)}
         >

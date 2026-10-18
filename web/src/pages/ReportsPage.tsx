@@ -24,7 +24,7 @@ export function ReportsPage() {
 
   return (
     <section className="grid gap-4" aria-busy={screen.report.isFetching || undefined}>
-      <h1 className="text-2xl font-semibold">{t('title')}</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight">{t('title')}</h1>
       <RangeSwitcher range={screen.range} onChange={screen.setRange} />
       {!screen.online && !screen.report.data ? (
         <p role="status" className="font-semibold text-warning">

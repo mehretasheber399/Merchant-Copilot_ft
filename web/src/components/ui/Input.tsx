@@ -16,7 +16,7 @@ export function Input({ label, error, hint, ...props }: InputProps) {
       {label}
       <input
         id={id}
-        className="min-h-control w-full rounded-control border border-line bg-surface px-3 text-base font-normal"
+        className="min-h-[52px] w-full rounded-2xl border border-line bg-surface px-4 text-base font-medium"
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy || undefined}
         {...props}

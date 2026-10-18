@@ -17,30 +17,39 @@ const badgeKey = {
 export function StockPanel({ items, locale }: { items: StockItem[]; locale: Locale }) {
   const { t } = useTranslation('dashboard');
   return (
-    <section aria-label={t('stock')}>
-      <h2 className="text-lg font-semibold">{t('stock')}</h2>
-      {items.length === 0 ? <p className="mt-2">{t('emptyStock')}</p> : null}
-      <ul className="mt-2 grid gap-2">
-        {items.map((item) => (
-          <li
-            key={item.productId}
-            className="flex min-h-control items-center justify-between gap-3 rounded-card border border-line px-3 py-2"
-          >
-            <span className="min-w-0">
-              <span className="block font-semibold">{localizedName(item, locale)}</span>
-              <span className="text-sm text-muted">
-                {item.daysOfStockLeft === null || item.daysOfStockLeft === undefined
-                  ? t('noSalesData')
-                  : t('daysLeft', { count: item.daysOfStockLeft })}
-              </span>
-            </span>
-            <span
-              className={`shrink-0 rounded-control px-2 py-1 text-sm font-semibold ${badgeClass[item.status]}`}
+    <section aria-label={t('stock')} className="rounded-card border border-line bg-surface p-4">
+      <h2 className="text-base font-bold">{t('stock')}</h2>
+      {items.length === 0 ? <p className="mt-2 text-muted">{t('emptyStock')}</p> : null}
+      <ul className="mt-1">
+        {items.map((item) => {
+          const name = localizedName(item, locale);
+          return (
+            <li
+              key={item.productId}
+              className="flex min-h-12 items-center gap-3 border-b border-line py-3 last:border-b-0"
             >
-              {t(badgeKey[item.status])}
-            </span>
-          </li>
-        ))}
+              <span
+                aria-hidden="true"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-primary-soft text-sm font-extrabold text-primary"
+              >
+                {name.slice(0, 1)}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-semibold">{name}</span>
+                <span className="text-sm text-muted">
+                  {item.daysOfStockLeft === null || item.daysOfStockLeft === undefined
+                    ? t('noSalesData')
+                    : t('daysLeft', { count: item.daysOfStockLeft })}
+                </span>
+              </span>
+              <span
+                className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${badgeClass[item.status]}`}
+              >
+                {t(badgeKey[item.status])}
+              </span>
+            </li>
+          );
+        })}
       </ul>
     </section>
   );

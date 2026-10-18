@@ -24,17 +24,17 @@ export function SaleResult({
         <>
           <h1 className="text-2xl font-semibold">{t('receipt')}</h1>
           {late ? <p className="font-semibold text-warning">{t('late')}</p> : null}
-          <ul className="grid gap-2">
+          <ul className="grid gap-2 rounded-card border border-line bg-surface p-4">
             {sale.items.map((item) => (
               <li key={`${item.productId}-${item.name}`} className="flex justify-between gap-3">
                 <span>
                   {item.name} × {item.qty}
                 </span>
-                <span>{formatMoney(item.price * item.qty, locale)}</span>
+                <span className="font-semibold">{formatMoney(item.price * item.qty, locale)}</span>
               </li>
             ))}
           </ul>
-          <p className="text-xl font-semibold">{formatMoney(sale.amount, locale)}</p>
+          <p className="text-2xl font-bold text-primary">{formatMoney(sale.amount, locale)}</p>
           {paidAt ? <p>{formatTime(paidAt, locale)}</p> : null}
         </>
       ) : null}

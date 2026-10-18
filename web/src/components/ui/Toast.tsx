@@ -24,7 +24,7 @@ export function ToastViewport() {
 
   return (
     <div
-      className={`pointer-events-none fixed inset-x-0 z-40 flex justify-center px-3 ${aboveNav ? 'bottom-[calc(56px+env(safe-area-inset-bottom)+12px)]' : 'bottom-[max(0.75rem,env(safe-area-inset-bottom))]'}`}
+      className={`pointer-events-none fixed inset-x-0 z-40 flex justify-center px-3 ${aboveNav ? 'bottom-[calc(96px+env(safe-area-inset-bottom))]' : 'bottom-[max(0.75rem,env(safe-area-inset-bottom))]'}`}
     >
       <div className="flex w-full max-w-[420px] flex-col gap-2" aria-live="polite">
         {toasts.map((toast) => (

@@ -12,7 +12,11 @@ export function RangeSwitcher({
 }) {
   const { t } = useTranslation('dashboard');
   return (
-    <div role="radiogroup" aria-label={t('range')} className="grid grid-cols-3 gap-2">
+    <div
+      role="radiogroup"
+      aria-label={t('range')}
+      className="grid grid-cols-3 gap-1 rounded-full border border-line bg-surface p-1"
+    >
       {RANGES.map((option) => {
         const selected = option === range;
         return (
@@ -21,7 +25,7 @@ export function RangeSwitcher({
             type="button"
             role="radio"
             aria-checked={selected}
-            className={`min-h-control rounded-control px-2 text-sm font-semibold ${selected ? 'bg-primary text-primary-foreground' : 'border border-line bg-surface text-ink'}`}
+            className={`min-h-12 rounded-full px-2 text-sm font-semibold ${selected ? 'bg-primary text-primary-foreground' : 'text-muted'}`}
             onClick={() => onChange(option)}
           >
             {t(option)}

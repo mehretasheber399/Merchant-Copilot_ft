@@ -41,18 +41,47 @@ export function SaleCatalog({
   const { t } = useTranslation(['sale', 'items']);
   const locale = useLocaleStore((state) => state.locale);
   const [search, setSearch] = useState('');
-  const visible = filterProducts(products, search);
+  const [category, setCategory] = useState('all');
+  const categories = [
+    ...new Set(products.map((product) => product.category.trim()).filter(Boolean)),
+  ];
+  const visible = filterProducts(products, search).filter(
+    (product) => category === 'all' || product.category === category,
+  );
 
   return (
     <div>
       <label className="grid gap-1 text-sm font-semibold">
         {t('sale:search')}
         <input
-          className="min-h-control rounded-control border border-line bg-surface px-3 text-base font-normal"
+          className="min-h-[52px] rounded-2xl border border-line bg-surface px-4 text-base font-medium"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
       </label>
+      {categories.length > 0 ? (
+        <div className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 pb-1">
+          <button
+            type="button"
+            aria-pressed={category === 'all'}
+            className={`inline-flex min-h-12 shrink-0 items-center rounded-full border px-4 text-sm font-semibold ${category === 'all' ? 'border-primary bg-primary text-primary-foreground shadow-shell' : 'border-line bg-surface text-muted'}`}
+            onClick={() => setCategory('all')}
+          >
+            {t('sale:all')}
+          </button>
+          {categories.map((name) => (
+            <button
+              key={name}
+              type="button"
+              aria-pressed={category === name}
+              className={`inline-flex min-h-12 shrink-0 items-center rounded-full border px-4 text-sm font-semibold ${category === name ? 'border-primary bg-primary text-primary-foreground shadow-shell' : 'border-line bg-surface text-muted'}`}
+              onClick={() => setCategory(name)}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+      ) : null}
       {visible.length === 0 ? <p className="mt-6">{t('sale:noResults')}</p> : null}
       <ul className="mt-4 grid gap-3">
         {visible.map((product) => {
@@ -60,49 +89,61 @@ export function SaleCatalog({
           const qty = lines.find((line) => line.productId === product.id)?.qty ?? 0;
           const short = isStockShort(product, qty);
           return (
-            <li key={product.id} className="rounded-card border border-line p-3">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="truncate font-semibold">{name}</p>
-                  <p className="text-sm">{formatMoney(product.price, locale)}</p>
-                </div>
+            <li key={product.id} className="rounded-card border border-line bg-surface p-3">
+              <div className="flex items-center gap-3">
                 <span
-                  data-stock={product.stockStatus}
-                  className={`rounded-full px-2 py-0.5 text-xs font-semibold ${stockClass[product.stockStatus]}`}
+                  aria-hidden="true"
+                  className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary-soft text-lg font-extrabold text-primary"
                 >
-                  {t(`items:${stockKey[product.stockStatus]}`)}
+                  {name.slice(0, 1)}
                 </span>
-              </div>
-              {qty === 0 ? (
-                <button
-                  type="button"
-                  className="mt-3 inline-flex min-h-control w-full items-center justify-center rounded-control bg-primary px-4 font-semibold text-primary-foreground"
-                  onClick={() => onAdd(product.id, product.price)}
-                >
-                  {t('sale:add')}
-                </button>
-              ) : (
-                <div className="mt-3 flex items-center justify-between gap-2">
-                  <button
-                    type="button"
-                    className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-control border border-line text-xl font-semibold"
-                    aria-label={t('sale:decrease', { name })}
-                    onClick={() => onChange(product.id, -1)}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-semibold">{name}</p>
+                  <p className="truncate text-sm text-muted">
+                    {product.category}
+                    {product.stock !== undefined ? ` · ${product.stock}` : ''}
+                  </p>
+                  <p className="font-extrabold tabular-nums text-primary">
+                    {formatMoney(product.price, locale)}
+                  </p>
+                  <span
+                    data-stock={product.stockStatus}
+                    className={`mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-bold ${stockClass[product.stockStatus]}`}
                   >
-                    −
-                  </button>
-                  <span className="text-lg font-semibold">{qty}</span>
-                  <button
-                    type="button"
-                    className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-control border border-line text-xl font-semibold disabled:opacity-60"
-                    aria-label={t('sale:increase', { name })}
-                    disabled={qty >= 99}
-                    onClick={() => onChange(product.id, 1)}
-                  >
-                    +
-                  </button>
+                    {t(`items:${stockKey[product.stockStatus]}`)}
+                  </span>
                 </div>
-              )}
+                {qty === 0 ? (
+                  <button
+                    type="button"
+                    className="inline-flex h-12 min-w-[76px] shrink-0 items-center justify-center rounded-full bg-primary px-5 font-bold text-primary-foreground active:scale-95"
+                    onClick={() => onAdd(product.id, product.price)}
+                  >
+                    {t('sale:add')}
+                  </button>
+                ) : (
+                  <div className="flex shrink-0 items-center gap-1 rounded-full bg-primary-soft p-1">
+                    <button
+                      type="button"
+                      className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-surface text-xl font-extrabold text-primary"
+                      aria-label={t('sale:decrease', { name })}
+                      onClick={() => onChange(product.id, -1)}
+                    >
+                      −
+                    </button>
+                    <span className="min-w-[22px] text-center font-bold tabular-nums">{qty}</span>
+                    <button
+                      type="button"
+                      className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-surface text-xl font-extrabold text-primary disabled:opacity-60"
+                      aria-label={t('sale:increase', { name })}
+                      disabled={qty >= 99}
+                      onClick={() => onChange(product.id, 1)}
+                    >
+                      +
+                    </button>
+                  </div>
+                )}
+              </div>
               {short ? (
                 <p className="mt-2 text-sm font-semibold text-warning">
                   {t('sale:stockWarning', { count: product.stock ?? 0 })}

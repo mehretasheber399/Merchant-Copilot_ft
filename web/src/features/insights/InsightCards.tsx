@@ -7,7 +7,15 @@ import { canSeeEvidence, textOf } from './logic';
 function Block({ label, body, highlight }: { label: string; body: string; highlight?: boolean }) {
   return (
     <div className={highlight ? 'rounded-control bg-primary-soft p-3' : undefined}>
-      <p className="text-sm font-semibold text-muted">{label}</p>
+      <p
+        className={
+          highlight
+            ? 'text-xs font-extrabold uppercase tracking-wide text-primary'
+            : 'text-sm font-semibold text-muted'
+        }
+      >
+        {label}
+      </p>
       <p className="mt-1 break-words">{body}</p>
     </div>
   );
@@ -33,35 +41,40 @@ export function InsightCards({
         return (
           <li
             key={insight.id ?? `${insight.type}-${insight.dateKey}-${index}`}
-            className="min-w-0 rounded-card border border-line bg-surface p-3"
+            className="min-w-0 overflow-hidden rounded-card border border-line bg-surface"
           >
-            <div className="flex items-start gap-3">
-              <InsightIcon type={insight.type} />
-              <h2 className="min-w-0 break-words text-lg font-semibold">
-                {textOf(insight.what, locale)}
-              </h2>
-            </div>
-            <div className="mt-3 grid gap-3">
-              <Block label={t('why')} body={textOf(insight.why, locale)} />
-              <Block label={t('check')} body={textOf(insight.check, locale)} />
-              <Block label={t('next')} body={textOf(insight.nextAction, locale)} highlight />
-            </div>
-            <p
-              className={`mt-3 inline-flex min-h-8 items-center rounded-control border-2 px-2 py-1 text-sm font-semibold ${
-                estimate
-                  ? 'border-dashed border-warning text-warning'
-                  : 'border-solid border-success text-success'
-              }`}
-            >
-              {estimate ? t('confidenceEstimate') : t('confidenceHigh')}
-            </p>
-            {canSeeEvidence(insight) ? (
-              <div className="mt-3">
-                <Button variant="secondary" onClick={() => onEvidence(insight.id as string)}>
-                  {t('seeEvidence')}
-                </Button>
+            <div className="h-1.5 bg-gradient-to-r from-primary-bright to-[#FFB703]" />
+            <div className="p-4">
+              <div className="flex items-start gap-3">
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary-soft">
+                  <InsightIcon type={insight.type} className="h-6 w-6 shrink-0 text-primary" />
+                </span>
+                <h2 className="min-w-0 break-words text-lg font-bold">
+                  {textOf(insight.what, locale)}
+                </h2>
               </div>
-            ) : null}
+              <div className="mt-3 grid gap-3">
+                <Block label={t('why')} body={textOf(insight.why, locale)} />
+                <Block label={t('check')} body={textOf(insight.check, locale)} />
+                <Block label={t('next')} body={textOf(insight.nextAction, locale)} highlight />
+              </div>
+              <p
+                className={`mt-3 inline-flex min-h-8 items-center rounded-control border-2 px-2 py-1 text-sm font-semibold ${
+                  estimate
+                    ? 'border-dashed border-warning text-warning'
+                    : 'border-solid border-success text-success'
+                }`}
+              >
+                {estimate ? t('confidenceEstimate') : t('confidenceHigh')}
+              </p>
+              {canSeeEvidence(insight) ? (
+                <div className="mt-3">
+                  <Button variant="secondary" onClick={() => onEvidence(insight.id as string)}>
+                    {t('seeEvidence')}
+                  </Button>
+                </div>
+              ) : null}
+            </div>
           </li>
         );
       })}
