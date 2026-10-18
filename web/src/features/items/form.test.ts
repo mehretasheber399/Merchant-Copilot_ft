@@ -46,12 +46,22 @@ describe('item form', () => {
     expect(displayName({ name: 'Sugar', nameAm: ' ' }, 'am')).toBe('Sugar');
   });
 
-  it('applies template indexes, or bulk-creates when a price was edited', () => {
-    const rows = starterRows([templateItem]);
-    expect(starterSubmit(rows)).toEqual({ kind: 'apply', items: [3] });
-    expect(starterSubmit([{ ...rows[0]!, price: '90' }])).toMatchObject({ kind: 'bulk' });
-    expect(starterSubmit([{ ...rows[0]!, selected: false }])).toEqual({ kind: 'empty' });
-    expect(starterSubmit([{ ...rows[0]!, price: '9.5' }])).toEqual({ kind: 'invalid' });
+  it('leaves out items already in the shop and sends an apply payload', () => {
+    const sugar = starterRows([templateItem], ['sugar'])[0]!;
+    const tea = starterRows(
+      [{ ...templateItem, index: 4, name: 'Tea', nameAm: 'ሻይ', price: 40 }],
+      ['sugar'],
+    )[0]!;
+    expect(sugar.alreadyAdded).toBe(true);
+    expect(sugar.selected).toBe(false);
+    expect(tea.alreadyAdded).toBe(false);
+    expect(starterSubmit([sugar, tea])).toEqual({ kind: 'apply', calls: [{ items: [4] }] });
+    expect(starterSubmit([{ ...tea, price: '55' }])).toEqual({
+      kind: 'apply',
+      calls: [{ items: [4], overrides: { price: 55 } }],
+    });
+    expect(starterSubmit([{ ...tea, selected: false }])).toEqual({ kind: 'empty' });
+    expect(starterSubmit([{ ...tea, price: '9.5' }])).toEqual({ kind: 'invalid' });
   });
 });
 

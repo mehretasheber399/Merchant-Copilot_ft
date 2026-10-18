@@ -58,7 +58,8 @@ export function useDeleteProduct() {
 export function useApplyStarter() {
   const invalidate = useInvalidateProducts();
   return useMutation({
-    mutationFn: (items: number[]) => applyStarterTemplate({ items }),
+    mutationFn: (input: { items: Array<number | string>; overrides?: { price?: number } }) =>
+      applyStarterTemplate(input),
     onSuccess: invalidate,
   });
 }

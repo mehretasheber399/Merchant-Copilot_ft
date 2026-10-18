@@ -19,6 +19,18 @@ import { SalePage } from './pages/SalePage';
 import { queryClient } from './queryClient';
 import { useAuthStore, validateSession } from './store/auth';
 import { useLocaleStore } from './store/locale';
+import { retainStream } from './stream/stream';
+
+function StreamConnection() {
+  const token = useAuthStore((state) => state.token);
+  useEffect(() => {
+    if (!token) {
+      return;
+    }
+    return retainStream();
+  }, [token]);
+  return null;
+}
 
 function SessionEffects() {
   const navigate = useNavigate();
@@ -47,6 +59,7 @@ export function App() {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <SessionEffects />
+          <StreamConnection />
           <ErrorBoundary>
             <OfflineBanner />
             <ToastViewport />

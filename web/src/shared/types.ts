@@ -278,6 +278,14 @@ export interface SaleRequestInput {
   items: { productId: string; qty: number }[];
 }
 
+export interface SaleUpdatedEvent {
+  merchantId: string;
+  requestId: string;
+  status: SaleStatus;
+  amount: number;
+  lateConfirmation?: boolean;
+}
+
 export interface MockPending {
   businessName: string;
   amount: number;

@@ -1,0 +1,56 @@
+import { useTranslation } from 'react-i18next';
+import { Button } from '../../components/ui/Button';
+import type { SaleRequestView } from '../../shared/types';
+import { useLocaleStore } from '../../store/locale';
+import { formatMoney, formatTime } from '../../utils/format';
+import { showLatePayment } from './logic';
+
+export function SaleResult({
+  sale,
+  paidAt,
+  onNewSale,
+}: {
+  sale: SaleRequestView;
+  paidAt: string | null;
+  onNewSale: () => void;
+}) {
+  const { t } = useTranslation('sale');
+  const locale = useLocaleStore((state) => state.locale);
+  const late = showLatePayment(sale.status, sale.lateConfirmation);
+
+  return (
+    <section aria-live="polite" className="grid gap-4">
+      {sale.status === 'PAID' ? (
+        <>
+          <h1 className="text-2xl font-semibold">{t('receipt')}</h1>
+          {late ? <p className="font-semibold text-warning">{t('late')}</p> : null}
+          <ul className="grid gap-2">
+            {sale.items.map((item) => (
+              <li key={`${item.productId}-${item.name}`} className="flex justify-between gap-3">
+                <span>
+                  {item.name} × {item.qty}
+                </span>
+                <span>{formatMoney(item.price * item.qty, locale)}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="text-xl font-semibold">{formatMoney(sale.amount, locale)}</p>
+          {paidAt ? <p>{formatTime(paidAt, locale)}</p> : null}
+        </>
+      ) : null}
+      {sale.status === 'DECLINED' ? (
+        <h1 className="text-2xl font-semibold">{t('wrongPin')}</h1>
+      ) : null}
+      {sale.status === 'INSUFFICIENT' ? (
+        <h1 className="text-2xl font-semibold">{t('insufficient')}</h1>
+      ) : null}
+      {sale.status === 'TIMEOUT' ? (
+        <h1 className="text-2xl font-semibold">{t('timeout')}</h1>
+      ) : null}
+      {sale.status === 'CANCELLED' ? (
+        <h1 className="text-2xl font-semibold">{t('cancelled')}</h1>
+      ) : null}
+      <Button onClick={onNewSale}>{t('newSale')}</Button>
+    </section>
+  );
+}

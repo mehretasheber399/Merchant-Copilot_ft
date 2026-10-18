@@ -126,51 +126,66 @@ export interface StarterRow {
   stock: number;
   reorderThreshold: number;
   selected: boolean;
+  alreadyAdded: boolean;
 }
 
-export function starterRows(items: StarterTemplateItem[]): StarterRow[] {
-  return items.map((item) => ({
-    index: item.index,
-    name: item.name,
-    nameAm: item.nameAm,
-    category: item.category,
-    price: String(item.price),
-    templatePrice: item.price,
-    cost: item.cost,
-    stock: item.stock,
-    reorderThreshold: item.reorderThreshold,
-    selected: true,
-  }));
+export function starterRows(
+  items: StarterTemplateItem[],
+  existingNames: string[] = [],
+): StarterRow[] {
+  const taken = new Set(existingNames.map((name) => name.trim().toLowerCase()));
+  return items.map((item) => {
+    const alreadyAdded = taken.has(item.name.trim().toLowerCase());
+    return {
+      index: item.index,
+      name: item.name,
+      nameAm: item.nameAm,
+      category: item.category,
+      price: String(item.price),
+      templatePrice: item.price,
+      cost: item.cost,
+      stock: item.stock,
+      reorderThreshold: item.reorderThreshold,
+      alreadyAdded,
+      selected: !alreadyAdded,
+    };
+  });
+}
+
+export interface StarterApplyCall {
+  items: Array<number | string>;
+  overrides?: { price: number };
 }
 
 export type StarterSubmit =
-  | { kind: 'empty' }
-  | { kind: 'invalid' }
-  | { kind: 'apply'; items: number[] }
-  | { kind: 'bulk'; items: CreateProductInput[] };
+  { kind: 'empty' } | { kind: 'invalid' } | { kind: 'apply'; calls: StarterApplyCall[] };
 
 export function starterSubmit(rows: StarterRow[]): StarterSubmit {
-  const selected = rows.filter((row) => row.selected);
+  const selected = rows.filter((row) => row.selected && !row.alreadyAdded);
   if (selected.length === 0) {
     return { kind: 'empty' };
   }
   if (selected.some((row) => !WHOLE_NUMBER.test(row.price.trim()))) {
     return { kind: 'invalid' };
   }
-  const edited = selected.some((row) => Number(row.price) !== row.templatePrice);
-  if (!edited) {
-    return { kind: 'apply', items: selected.map((row) => row.index) };
+  const unchanged: number[] = [];
+  const changed = new Map<number, number[]>();
+  for (const row of selected) {
+    const price = Number(row.price);
+    if (price === row.templatePrice) {
+      unchanged.push(row.index);
+    } else {
+      const group = changed.get(price) ?? [];
+      group.push(row.index);
+      changed.set(price, group);
+    }
   }
-  return {
-    kind: 'bulk',
-    items: selected.map((row) => ({
-      name: row.name,
-      nameAm: row.nameAm,
-      category: row.category,
-      price: Number(row.price),
-      cost: row.cost,
-      stock: row.stock,
-      reorderThreshold: row.reorderThreshold,
-    })),
-  };
+  const calls: StarterApplyCall[] = [];
+  if (unchanged.length > 0) {
+    calls.push({ items: unchanged });
+  }
+  for (const [price, items] of changed) {
+    calls.push({ items, overrides: { price } });
+  }
+  return { kind: 'apply', calls };
 }

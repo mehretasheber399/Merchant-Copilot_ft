@@ -5,7 +5,6 @@ import { I18nextProvider } from 'react-i18next';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   applyStarterTemplate,
-  bulkCreateProducts,
   createProduct,
   getStarterTemplate,
   listProducts,
@@ -28,7 +27,6 @@ const listProductsMock = vi.mocked(listProducts);
 const createProductMock = vi.mocked(createProduct);
 const getStarterTemplateMock = vi.mocked(getStarterTemplate);
 const applyStarterTemplateMock = vi.mocked(applyStarterTemplate);
-const bulkCreateProductsMock = vi.mocked(bulkCreateProducts);
 
 function product(overrides: Partial<ProductView> = {}): ProductView {
   return {
@@ -79,7 +77,6 @@ describe('items screen', () => {
     createProductMock.mockReset();
     getStarterTemplateMock.mockReset();
     applyStarterTemplateMock.mockReset();
-    bulkCreateProductsMock.mockReset();
   });
 
   it('shows stock badges and requests the full list', async () => {
@@ -159,17 +156,46 @@ describe('items screen', () => {
     await user.click(screen.getByRole('button', { name: 'Add selected' }));
 
     expect(applyStarterTemplateMock).toHaveBeenCalledWith({ items: [1, 2] });
-    expect(await screen.findByText('Added 2. Skipped 1.')).toBeInTheDocument();
+    expect(await screen.findByText('2 added, 1 skipped')).toBeInTheDocument();
   });
 
-  it('shows bulk errors when an edited starter price only partly saves', async () => {
+  it('disables starter items that are already in the shop and applies the rest', async () => {
+    const user = userEvent.setup();
+    listProductsMock.mockResolvedValue([product({ name: 'Sugar' })]);
+    getStarterTemplateMock.mockResolvedValue([
+      templateItem(),
+      templateItem({ index: 2, id: 'tpl-2', name: 'Tea', nameAm: 'ሻይ', price: 40 }),
+    ]);
+    applyStarterTemplateMock.mockResolvedValue({ created: 1, skipped: 0 });
+    renderItems();
+
+    await user.click(await screen.findByRole('button', { name: 'Add from starter list' }));
+    const sugar = await screen.findByRole('checkbox', { name: /Sugar/ });
+    expect(sugar).toBeDisabled();
+    expect(sugar).not.toBeChecked();
+    expect(screen.getByText('Already added')).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', { name: 'Tea' })).toBeChecked();
+
+    await user.click(screen.getByRole('button', { name: 'Select none' }));
+    await user.click(screen.getByRole('button', { name: 'Add selected' }));
+    expect(screen.getByText('Select at least one item.')).toBeInTheDocument();
+    expect(applyStarterTemplateMock).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole('button', { name: 'Select all' }));
+    expect(screen.getByRole('checkbox', { name: /Sugar/ })).toBeDisabled();
+    expect(screen.getByRole('checkbox', { name: 'Tea' })).toBeChecked();
+    await user.click(screen.getByRole('button', { name: 'Add selected' }));
+
+    expect(applyStarterTemplateMock).toHaveBeenCalledWith({ items: [2] });
+    expect(await screen.findByText('1 added, 0 skipped')).toBeInTheDocument();
+    expect(listProductsMock.mock.calls.length).toBeGreaterThan(1);
+  });
+
+  it('sends an edited starter price as the apply override', async () => {
     const user = userEvent.setup();
     listProductsMock.mockResolvedValue([]);
     getStarterTemplateMock.mockResolvedValue([templateItem()]);
-    bulkCreateProductsMock.mockResolvedValue({
-      created: 0,
-      errors: [{ index: 0, message: 'Duplicate name' }],
-    });
+    applyStarterTemplateMock.mockResolvedValue({ created: 1, skipped: 0 });
     renderItems();
 
     await user.click(await screen.findByRole('button', { name: 'Use starter list' }));
@@ -178,10 +204,10 @@ describe('items screen', () => {
     await user.type(price, '90');
     await user.click(screen.getByRole('button', { name: 'Add selected' }));
 
-    expect(bulkCreateProductsMock).toHaveBeenCalledWith([
-      expect.objectContaining({ name: 'Sugar', price: 90 }),
-    ]);
-    expect((await screen.findAllByText(/Some items were not added/)).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/Duplicate name/).length).toBeGreaterThan(0);
+    expect(applyStarterTemplateMock).toHaveBeenCalledWith({
+      items: [1],
+      overrides: { price: 90 },
+    });
+    expect(await screen.findByText('1 added, 0 skipped')).toBeInTheDocument();
   });
 });

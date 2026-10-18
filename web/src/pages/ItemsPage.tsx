@@ -45,8 +45,11 @@ export function ItemsPage() {
           onChange={(event) => setSearch(event.target.value)}
         />
       </label>
-      <div className="mt-3">
+      <div className="mt-3 grid gap-2">
         <Button onClick={() => setEditing(null)}>{t('add')}</Button>
+        <Button variant="secondary" onClick={() => setStarterOpen(true)}>
+          {t('addFromStarter')}
+        </Button>
       </div>
       {notice ? (
         <p role="status" className="mt-3 text-sm font-semibold text-success">
