@@ -141,7 +141,9 @@ export async function cancelSale(requestId: string): Promise<SaleRequestView> {
 }
 
 export function getMockPending(requestId: string): Promise<MockPending> {
-  return apiRequest<MockPending>(`/gateway/mock/pending/${requestId}`, { auth: false });
+  return apiRequest<MockPending>(`/gateway/mock/pending/${encodeURIComponent(requestId)}`, {
+    auth: false,
+  });
 }
 
 export async function submitMockPin(requestId: string, pin: string): Promise<SaleRequestView> {

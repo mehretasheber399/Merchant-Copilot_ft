@@ -286,6 +286,18 @@ export interface SaleUpdatedEvent {
   lateConfirmation?: boolean;
 }
 
+export interface StockLowEvent {
+  merchantId: string;
+  productId: string;
+  name: string;
+  stock: number;
+  threshold: number;
+}
+
+export interface InsightUpdatedEvent {
+  merchantId: string;
+}
+
 export interface MockPending {
   businessName: string;
   amount: number;

@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { useEffect, useId, useRef, type ReactNode, type TouchEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const FOCUSABLE =
@@ -8,18 +8,40 @@ export function Sheet({
   open,
   title,
   onClose,
+  swipeClose = false,
   children,
 }: {
   open: boolean;
   title: string;
   onClose: () => void;
+  swipeClose?: boolean;
   children: ReactNode;
 }) {
   const { t } = useTranslation('common');
   const panelRef = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
+  const dragY = useRef<number | null>(null);
   const titleId = useId();
   onCloseRef.current = onClose;
+
+  const onTouchStart = (event: TouchEvent<HTMLDivElement>) => {
+    if (!swipeClose) {
+      return;
+    }
+    dragY.current = event.touches[0]?.clientY ?? null;
+  };
+
+  const onTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
+    if (!swipeClose || dragY.current === null) {
+      return;
+    }
+    const end = event.changedTouches[0]?.clientY;
+    const start = dragY.current;
+    dragY.current = null;
+    if (end !== undefined && end - start >= 48) {
+      onCloseRef.current();
+    }
+  };
 
   useEffect(() => {
     if (!open) {
@@ -82,17 +104,22 @@ export function Sheet({
         aria-labelledby={titleId}
         className="relative z-10 max-h-[92dvh] w-full max-w-[420px] overflow-y-auto rounded-t-card bg-surface px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-shell"
       >
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 id={titleId} className="text-xl font-semibold">
-            {title}
-          </h2>
-          <button
-            type="button"
-            className="inline-flex min-h-12 min-w-12 items-center justify-center text-sm font-semibold"
-            onClick={onClose}
-          >
-            {t('close')}
-          </button>
+        <div onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+          {swipeClose ? (
+            <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-line" aria-hidden="true" />
+          ) : null}
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 id={titleId} className="text-xl font-semibold">
+              {title}
+            </h2>
+            <button
+              type="button"
+              className="inline-flex min-h-12 min-w-12 items-center justify-center text-sm font-semibold"
+              onClick={onClose}
+            >
+              {t('close')}
+            </button>
+          </div>
         </div>
         {children}
       </div>
