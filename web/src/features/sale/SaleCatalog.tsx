@@ -126,7 +126,11 @@ export function SaleCatalog({
               <p className="mt-2 text-sm font-bold tabular-nums">
                 {formatMoney(product.price, locale)}
               </p>
-              {qty === 0 ? (
+              {product.stockStatus === 'out' && qty === 0 ? (
+                <p className="mt-3 flex h-12 items-center justify-center rounded-[10px] bg-danger-soft text-sm font-bold text-danger">
+                  {t('sale:outOfStock')}
+                </p>
+              ) : qty === 0 ? (
                 <button
                   type="button"
                   className="mt-3 inline-flex h-12 w-full items-center justify-center gap-1 rounded-[10px] bg-primary-soft text-sm font-bold text-primary"
@@ -149,7 +153,7 @@ export function SaleCatalog({
                     type="button"
                     className="grid h-12 place-items-center text-xl font-bold disabled:opacity-60"
                     aria-label={t('sale:increase', { name })}
-                    disabled={qty >= 99}
+                    disabled={qty >= 99 || product.stockStatus === 'out'}
                     onClick={() => onChange(product.id, 1)}
                   >
                     +

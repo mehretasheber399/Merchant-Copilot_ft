@@ -182,7 +182,7 @@ describe('insights', () => {
     expect(screen.queryByText('Why it matters')).not.toBeInTheDocument();
     expect(screen.getByText('Count the bottles.')).toBeInTheDocument();
     expect(screen.getByText('Buy more oil today.')).toBeInTheDocument();
-    expect(screen.getByText('Sure').className).toContain('border-solid');
+    expect(screen.queryByText('Sure')).not.toBeInTheDocument();
     expect(screen.getByText('Rough figure').className).toContain('border-dashed');
     expect(screen.getAllByRole('button', { name: 'See the numbers' })).toHaveLength(1);
 
@@ -200,7 +200,7 @@ describe('insights', () => {
     await user.click(screen.getByRole('button', { name: 'See the numbers' }));
     const dialog = await screen.findByRole('dialog', { name: 'The numbers' });
     expect(dialog.contains(document.activeElement)).toBe(true);
-    expect(within(dialog).getByText('Items at risk')).toBeInTheDocument();
+    expect(within(dialog).getByText('Products running low')).toBeInTheDocument();
     expect(within(dialog).getByText('Oil')).toBeInTheDocument();
     expect(within(dialog).getByText('250 ETB')).toBeInTheDocument();
     expect(within(dialog).getByText('Oil × 1')).toBeInTheDocument();

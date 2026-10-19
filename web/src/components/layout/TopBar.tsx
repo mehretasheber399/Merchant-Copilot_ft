@@ -25,7 +25,7 @@ export function TopBar() {
   const mark = (business.trim()[0] ?? 'S').toUpperCase();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-white/95 px-4 pt-[max(0.25rem,env(safe-area-inset-top))] backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-line bg-white/95 px-4 pt-[max(0.25rem,env(safe-area-inset-top))] backdrop-blur-md">
       <div className="flex h-[68px] items-center justify-between gap-3">
         {page ? (
           <div className="min-w-0">
@@ -49,26 +49,6 @@ export function TopBar() {
         <div className="flex shrink-0 items-center gap-2">
           <button
             type="button"
-            className="grid h-12 w-12 place-items-center rounded-xl border border-line bg-white text-ink"
-            aria-haspopup="dialog"
-            aria-expanded={menu}
-            aria-label={t('common:menu')}
-            onClick={() => setMenu(true)}
-          >
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-            >
-              <path d="M4 7h16M4 12h16M4 17h16" />
-            </svg>
-          </button>
-          <button
-            type="button"
             className="grid h-12 w-12 place-items-center rounded-xl border border-line bg-white text-muted"
             aria-haspopup="dialog"
             aria-expanded={notes}
@@ -89,12 +69,33 @@ export function TopBar() {
               <path d="M10 21h4" />
             </svg>
           </button>
+          <button
+            type="button"
+            className="grid h-12 w-12 place-items-center rounded-xl border border-line bg-white text-ink"
+            aria-haspopup="dialog"
+            aria-expanded={menu}
+            aria-label={t('common:menu')}
+            onClick={() => setMenu(true)}
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            >
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+          </button>
         </div>
       </div>
       <Sheet
         open={menu}
         title={t('common:menu')}
         preferField={false}
+        placement="top"
         onClose={() => setMenu(false)}
       >
         <div className="grid gap-3">

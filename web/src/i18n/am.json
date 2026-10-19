@@ -32,7 +32,8 @@
     "next": "ቀጣይ",
     "previous": "ተመለስ",
     "reports": "ሪፖርት",
-    "// REVIEW notifications": "Confirm notice wording with a native speaker."
+    "// REVIEW notifications": "Confirm notice wording with a native speaker.",
+    "clearNotices": "አጽዳ"
   },
   "nav": {
     "sale": "ሽያጭ",
@@ -86,7 +87,7 @@
     "mpesa": "M-PESA",
     "// REVIEW viewCart": "Confirm cart and payment sheet wording with a native speaker.",
     "phone": "የደንበኛ ስልክ",
-    "phonePlaceholder": "09xxxxxxxx",
+    "phonePlaceholder": "07xxxxxxxx",
     "phoneInvalid": "ትክክለኛ የM-PESA ቁጥር ያስገቡ።",
     "request": "ክፍያ ጠይቅ",
     "stockWarning": "በክምችት {{count}} ብቻ።",
@@ -112,8 +113,13 @@
     "receipt": "ደረሰኝ",
     "customer": "ደንበኛ",
     "receiptNo": "የደረሰኝ ቁ.",
-    "paidAt": "የተከፈለበት ሰዓት",
-    "clearSale": "አዲስ ሽያጭ ጀምር"
+    "paidAt": "ሰዓት",
+    "clearSale": "አዲስ ሽያጭ ጀምር",
+    "transactionDetails": "የግብይት ዝርዝር",
+    "paid": "ተከፍሏል",
+    "itemsLabel": "እቃዎች",
+    "paymentMethod": "ክፍያ",
+    "shareReceipt": "ደረሰኝ አጋራ"
   },
   "items": {
     "title": "ምርቶች",
@@ -209,7 +215,8 @@
     "// REVIEW needsReview": "Confirm this unmapped-sale label with a native speaker.",
     "newSale": "አዲስ ሽያጭ {{amount}}",
     "lowStock": "አነስተኛ ክምችት፡ {{name}}",
-    "line": "{{name}} × {{qty}}"
+    "line": "{{name}} × {{qty}}",
+    "paymentGot": "ክፍያ ደርሷል"
   },
   "insights": {
     "title": "ግንዛቤ",
@@ -252,7 +259,10 @@
     "remove": "{{name}} አስወግድ",
     "decrease": "{{name}} ቀንስ",
     "increase": "{{name}} ጨምር",
-    "line": "{{name}} × {{qty}}"
+    "line": "{{name}} × {{qty}}",
+    "calcRunningLow": "እያለቁ ያሉ ምርቶች",
+    "calcDaysLeft": "እስከሚያልቅ ቀናት",
+    "calcSoldDays": "የሸጡባቸው ቀናት"
   },
   "simulator": {
     "title": "የደንበኛ ስልክ",

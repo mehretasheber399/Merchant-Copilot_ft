@@ -5,7 +5,7 @@ import { Sheet } from '../../components/ui/Sheet';
 import i18n from '../../i18n';
 import type { InsightEvidence, Locale } from '../../shared/types';
 import { formatMoney, formatTime } from '../../utils/format';
-import { formatCalcValue, textOf } from './logic';
+import { formatCalcValue, simpleCalcLabel, textOf } from './logic';
 
 export function EvidenceDrawer({
   open,
@@ -47,19 +47,20 @@ export function EvidenceDrawer({
               <p className="mt-2 text-sm">{t('emptyCalc')}</p>
             ) : (
               <ul className="mt-3 grid grid-cols-2 gap-2">
-                {calc.map((step, index) => (
-                  <li
-                    key={`${textOf(step.label, locale)}-${index}`}
-                    className="rounded-2xl bg-primary-soft px-3 py-4 text-center"
-                  >
-                    <p className="text-2xl font-extrabold tabular-nums text-primary">
-                      {formatCalcValue(step.value)}
-                    </p>
-                    <p className="mt-1 text-sm font-semibold text-ink">
-                      {textOf(step.label, locale)}
-                    </p>
-                  </li>
-                ))}
+                {calc.map((step, index) => {
+                  const label = simpleCalcLabel(textOf(step.label, locale), t);
+                  return (
+                    <li
+                      key={`${label}-${index}`}
+                      className="rounded-2xl bg-primary-soft px-3 py-4 text-center"
+                    >
+                      <p className="text-2xl font-extrabold tabular-nums text-primary">
+                        {formatCalcValue(step.value)}
+                      </p>
+                      <p className="mt-1 text-sm font-semibold text-ink">{label}</p>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </section>

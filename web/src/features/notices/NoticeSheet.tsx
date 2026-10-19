@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getDashboard, getStock, listTransactions } from '../../api/endpoints';
+import { Button } from '../../components/ui/Button';
 import { Sheet } from '../../components/ui/Sheet';
 import { useOnline } from '../../hooks/useOnline';
 import type { Locale } from '../../shared/types';
@@ -8,12 +10,33 @@ import { useLocaleStore } from '../../store/locale';
 import { formatDelta, formatMoney } from '../../utils/format';
 import { localizedName } from '../dashboard/logic';
 
+const CLEARED_KEY = 'mpesa-copilot-cleared-notices';
+
 interface Notice {
   id: string;
   title: string;
   body: string;
   when: string;
   tone: 'stock' | 'sales' | 'pay';
+}
+
+function readCleared(): Set<string> {
+  try {
+    const raw = sessionStorage.getItem(CLEARED_KEY);
+    if (!raw) {
+      return new Set();
+    }
+    const parsed = JSON.parse(raw) as unknown;
+    return Array.isArray(parsed)
+      ? new Set(parsed.filter((id) => typeof id === 'string'))
+      : new Set();
+  } catch {
+    return new Set();
+  }
+}
+
+function writeCleared(ids: Set<string>) {
+  sessionStorage.setItem(CLEARED_KEY, JSON.stringify([...ids]));
 }
 
 function ageLabel(iso: string, t: (key: string, options?: { count: number }) => string): string {
@@ -96,6 +119,7 @@ export function NoticeSheet({ open, onClose }: { open: boolean; onClose: () => v
   const { t } = useTranslation(['common', 'dashboard']);
   const online = useOnline();
   const locale = useLocaleStore((state) => state.locale);
+  const [cleared, setCleared] = useState(readCleared);
   const stock = useQuery({
     queryKey: ['stock'],
     queryFn: getStock,
@@ -104,9 +128,10 @@ export function NoticeSheet({ open, onClose }: { open: boolean; onClose: () => v
   });
   const sales = useQuery({
     queryKey: ['transactions', 'notices'],
-    queryFn: () => listTransactions({ limit: 5 }),
+    queryFn: () => listTransactions({ limit: 10 }),
     enabled: open && online,
-    staleTime: 10_000,
+    staleTime: 5_000,
+    refetchOnMount: 'always',
   });
   const today = useQuery({
     queryKey: ['dashboard', 'today'],
@@ -115,23 +140,27 @@ export function NoticeSheet({ open, onClose }: { open: boolean; onClose: () => v
     staleTime: 10_000,
   });
 
-  const notices: Notice[] = [];
-  for (const item of stock.data ?? []) {
-    if (item.status !== 'low' && item.status !== 'out') {
-      continue;
-    }
-    const name = localizedName(item, locale);
-    notices.push({
-      id: `stock-${item.productId}`,
-      title: t(item.status === 'out' ? 'common:soldOut' : 'common:almostOut', { name }),
-      body: t('common:unitsLeft', { count: item.stock }),
-      when: t('common:today'),
-      tone: 'stock',
+  const payments: Notice[] = [];
+  for (const sale of sales.data?.transactions ?? []) {
+    payments.push({
+      id: `pay-${sale.id}`,
+      title: t('common:paymentReceived'),
+      body: [
+        formatMoney(sale.amount, locale as Locale),
+        sale.phoneMasked,
+        sale.items[0] ? `${sale.items[0].name} × ${sale.items[0].qty}` : '',
+      ]
+        .filter(Boolean)
+        .join(' · '),
+      when: ageLabel(sale.timestamp, t),
+      tone: 'pay',
     });
   }
+
+  const salesNotes: Notice[] = [];
   const change = today.data?.comparisons?.yesterday?.deltaPct;
   if (typeof change === 'number' && change !== 0) {
-    notices.push({
+    salesNotes.push({
       id: 'sales-today',
       title: t('common:strongSales'),
       body: t(change > 0 ? 'common:revenueUp' : 'common:revenueDown', {
@@ -141,17 +170,35 @@ export function NoticeSheet({ open, onClose }: { open: boolean; onClose: () => v
       tone: 'sales',
     });
   }
-  for (const sale of sales.data?.transactions ?? []) {
-    notices.push({
-      id: `pay-${sale.id}`,
-      title: t('common:paymentReceived'),
-      body: formatMoney(sale.amount, locale as Locale),
-      when: ageLabel(sale.timestamp, t),
-      tone: 'pay',
+
+  const stockNotes: Notice[] = [];
+  for (const item of stock.data ?? []) {
+    if (item.status !== 'low' && item.status !== 'out') {
+      continue;
+    }
+    const name = localizedName(item, locale);
+    stockNotes.push({
+      id: `stock-${item.productId}`,
+      title: t(item.status === 'out' ? 'common:soldOut' : 'common:almostOut', { name }),
+      body: t('common:unitsLeft', { count: item.stock }),
+      when: t('common:today'),
+      tone: 'stock',
     });
   }
 
+  const notices = [...payments, ...salesNotes, ...stockNotes].filter(
+    (notice) => !cleared.has(notice.id),
+  );
   const loading = stock.isPending || sales.isPending || today.isPending;
+
+  const clearAll = () => {
+    const next = new Set(cleared);
+    for (const notice of notices) {
+      next.add(notice.id);
+    }
+    writeCleared(next);
+    setCleared(next);
+  };
 
   return (
     <Sheet
@@ -160,7 +207,15 @@ export function NoticeSheet({ open, onClose }: { open: boolean; onClose: () => v
       subtitle={!loading && notices.length === 0 ? t('common:caughtUp') : undefined}
       onClose={onClose}
       preferField={false}
+      placement="top"
     >
+      {notices.length > 0 ? (
+        <div className="mb-3 flex justify-end">
+          <Button variant="secondary" onClick={clearAll}>
+            {t('common:clearNotices')}
+          </Button>
+        </div>
+      ) : null}
       {online && loading && notices.length === 0 ? (
         <p role="status">{t('common:loading')}</p>
       ) : null}

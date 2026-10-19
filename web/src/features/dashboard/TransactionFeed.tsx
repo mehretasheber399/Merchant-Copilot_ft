@@ -43,7 +43,9 @@ export function TransactionFeed({
             const flashing = flashIds.includes(row.id);
             const title =
               row.phoneMasked ||
-              (row.items[0] ? t('line', { name: row.items[0].name, qty: row.items[0].qty }) : '');
+              (row.items[0]
+                ? t('line', { name: row.items[0].name, qty: row.items[0].qty })
+                : t('paymentGot'));
             return (
               <li
                 key={row.id}
@@ -66,13 +68,11 @@ export function TransactionFeed({
                   </svg>
                 </span>
                 <span className="min-w-0 flex-1">
-                  {title ? (
-                    <span className="block truncate text-sm font-semibold">{title}</span>
-                  ) : null}
+                  <span className="block truncate text-sm font-semibold">{title}</span>
                   <span className="block text-xs text-muted">
                     {formatTime(row.timestamp, locale)}
                   </span>
-                  {row.items.length > 1 ? (
+                  {row.items.length > 0 ? (
                     <span className="block truncate text-xs text-muted">
                       {row.items
                         .map((item) => t('line', { name: item.name, qty: item.qty }))

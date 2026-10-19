@@ -13,6 +13,7 @@ export function Sheet({
   onClose,
   swipeClose = false,
   preferField = true,
+  placement = 'bottom',
   children,
 }: {
   open: boolean;
@@ -22,6 +23,7 @@ export function Sheet({
   onClose: () => void;
   swipeClose?: boolean;
   preferField?: boolean;
+  placement?: 'bottom' | 'top';
   children: ReactNode;
 }) {
   const { t } = useTranslation('common');
@@ -97,8 +99,12 @@ export function Sheet({
     return null;
   }
 
+  const fromTop = placement === 'top';
+
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/50 backdrop-blur-sm">
+    <div
+      className={`fixed inset-0 z-[80] flex justify-center bg-ink/50 backdrop-blur-sm ${fromTop ? 'items-start pt-[max(0.75rem,env(safe-area-inset-top))]' : 'items-end'}`}
+    >
       <button
         type="button"
         className="absolute inset-0"
@@ -110,15 +116,17 @@ export function Sheet({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="relative z-10 max-h-[92dvh] w-full max-w-[420px] overflow-y-auto rounded-t-[23px] bg-surface px-[18px] pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-2 shadow-shell"
+        className={`relative z-10 max-h-[92dvh] w-full max-w-[420px] overflow-y-auto bg-surface px-[18px] shadow-shell ${fromTop ? 'rounded-[20px] pb-4 pt-3' : 'rounded-t-[23px] pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-2'}`}
       >
         <div onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-          <div className="mx-auto mb-2 h-1 w-10 rounded-full bg-line" aria-hidden="true" />
+          {fromTop ? null : (
+            <div className="mx-auto mb-2 h-1 w-10 rounded-full bg-line" aria-hidden="true" />
+          )}
           <div className="mb-4 flex items-center gap-2 border-b border-line pb-3">
             {onBack ? (
               <button
                 type="button"
-                className="grid h-12 w-12 shrink-0 place-items-center rounded-[10px] bg-canvas text-ink"
+                className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-canvas text-ink"
                 aria-label={t('back')}
                 onClick={onBack}
               >
@@ -144,7 +152,7 @@ export function Sheet({
             </div>
             <button
               type="button"
-              className="grid h-12 w-12 shrink-0 place-items-center rounded-[10px] bg-canvas text-muted"
+              className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-canvas text-muted"
               aria-label={t('close')}
               onClick={onClose}
             >

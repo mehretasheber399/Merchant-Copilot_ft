@@ -251,7 +251,7 @@ describe('sale screen', () => {
       }),
     );
     expect(await screen.findByText('Payment arrived late - recorded')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Receipt' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Transaction details' })).toBeInTheDocument();
     expect(screen.getByText('Sugar × 2')).toBeInTheDocument();
   });
 

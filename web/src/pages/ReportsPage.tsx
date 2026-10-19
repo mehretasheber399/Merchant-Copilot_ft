@@ -18,6 +18,25 @@ function LoadingBlock() {
   );
 }
 
+function DownloadIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 4v10" />
+      <path d="m8 10 4 4 4-4" />
+      <path d="M5 19h14" />
+    </svg>
+  );
+}
+
 export function ReportsPage() {
   const { t } = useTranslation('reports');
   const locale = useLocaleStore((state) => state.locale);
@@ -26,33 +45,22 @@ export function ReportsPage() {
 
   return (
     <section className="grid gap-4" aria-busy={screen.report.isFetching || undefined}>
-      <div className="flex items-center justify-end">
-        <h1 className="sr-only">{t('title')}</h1>
+      <h1 className="sr-only">{t('title')}</h1>
+      <div className="flex items-center gap-2">
+        <div className="min-w-0 flex-1">
+          <RangeSwitcher range={screen.range} onChange={screen.setRange} />
+        </div>
         <button
           type="button"
-          className="grid h-12 w-12 place-items-center rounded-xl border border-line bg-surface text-ink disabled:opacity-60"
+          className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-line bg-surface text-ink disabled:opacity-60"
           aria-label={t('download')}
           aria-busy={screen.downloading === 'pdf' || undefined}
           disabled={screen.downloading !== null}
           onClick={() => screen.download('pdf')}
         >
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 24 24"
-            className="h-5 w-5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M12 4v10" />
-            <path d="m8 10 4 4 4-4" />
-            <path d="M5 19h14" />
-          </svg>
+          <DownloadIcon />
         </button>
       </div>
-      <RangeSwitcher range={screen.range} onChange={screen.setRange} />
       {!screen.online && !screen.report.data ? (
         <p role="status" className="font-semibold text-warning">
           {i18n.t('common:offline')}

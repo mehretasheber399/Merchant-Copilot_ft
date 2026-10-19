@@ -68,6 +68,34 @@ export function formatCalcValue(value: string | number | null | undefined): stri
   return value;
 }
 
+/** Map API calc labels to plain shopkeeper wording. */
+export function simpleCalcLabel(raw: string, t: (key: string) => string): string {
+  const text = raw.trim().toLowerCase();
+  if (!text) {
+    return raw;
+  }
+  if (
+    text.includes('at risk') ||
+    text.includes('items at risk') ||
+    text.includes('አደጋ') ||
+    text.includes('running out')
+  ) {
+    return t('calcRunningLow');
+  }
+  if (
+    text.includes('worst') ||
+    text.includes('stock left') ||
+    text.includes('days of stock') ||
+    text.includes('days left')
+  ) {
+    return t('calcDaysLeft');
+  }
+  if (text.includes('days with sales') || text.includes('with sales')) {
+    return t('calcSoldDays');
+  }
+  return raw;
+}
+
 export function mappingErrorKey(error: unknown): MappingErrorKey {
   if (!(error instanceof ApiError)) {
     return 'network';

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '../../components/ui/Button';
 import type { InsightView, Locale } from '../../shared/types';
 import { InsightIcon } from './InsightIcon';
-import { canSeeEvidence, formatCalcValue, textOf } from './logic';
+import { canSeeEvidence, formatCalcValue, simpleCalcLabel, textOf } from './logic';
 
 export function InsightCards({
   insights,
@@ -35,32 +35,29 @@ export function InsightCards({
                 <h2 className="break-words text-lg font-bold leading-snug">
                   {textOf(insight.what, locale)}
                 </h2>
-                <p
-                  className={`mt-2 inline-flex min-h-8 items-center rounded-control border-2 px-2 py-0.5 text-xs font-bold ${
-                    estimate
-                      ? 'border-dashed border-warning text-warning'
-                      : 'border-solid border-success text-success'
-                  }`}
-                >
-                  {estimate ? t('confidenceEstimate') : t('confidenceHigh')}
-                </p>
+                {estimate ? (
+                  <p className="mt-2 inline-flex min-h-8 items-center rounded-control border-2 border-dashed border-warning px-2 py-0.5 text-xs font-bold text-warning">
+                    {t('confidenceEstimate')}
+                  </p>
+                ) : null}
               </div>
             </div>
             {steps.length > 0 ? (
               <div className="grid grid-cols-3 gap-2 border-t border-line px-4 py-3">
-                {steps.map((step, stepIndex) => (
-                  <div
-                    key={`${textOf(step.label, locale)}-${stepIndex}`}
-                    className="min-w-0 rounded-xl bg-canvas px-2 py-2 text-center"
-                  >
-                    <p className="truncate text-base font-extrabold tabular-nums text-primary">
-                      {formatCalcValue(step.value)}
-                    </p>
-                    <p className="mt-0.5 truncate text-[11px] font-medium text-muted">
-                      {textOf(step.label, locale)}
-                    </p>
-                  </div>
-                ))}
+                {steps.map((step, stepIndex) => {
+                  const label = simpleCalcLabel(textOf(step.label, locale), t);
+                  return (
+                    <div
+                      key={`${label}-${stepIndex}`}
+                      className="min-w-0 rounded-xl bg-canvas px-2 py-2 text-center"
+                    >
+                      <p className="truncate text-base font-extrabold tabular-nums text-primary">
+                        {formatCalcValue(step.value)}
+                      </p>
+                      <p className="mt-0.5 truncate text-[11px] font-medium text-muted">{label}</p>
+                    </div>
+                  );
+                })}
               </div>
             ) : null}
             <div className="grid gap-3 border-t border-line px-4 py-4">

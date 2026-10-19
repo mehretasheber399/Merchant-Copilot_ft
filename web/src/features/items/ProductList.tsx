@@ -87,11 +87,21 @@ export function ProductList({
               </div>
               <button
                 type="button"
-                className="grid h-12 w-12 place-items-center rounded-[10px] text-xl font-bold text-muted"
+                className="grid h-12 w-12 place-items-center rounded-full bg-canvas text-muted"
                 aria-label={t('options', { name })}
                 onClick={() => onDelete(product)}
               >
-                ⋯
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                >
+                  <path d="m6 6 12 12M18 6 6 18" />
+                </svg>
               </button>
             </div>
           </li>
