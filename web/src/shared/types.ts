@@ -319,6 +319,7 @@ export interface InsightUpdatedEvent {
 }
 
 export interface MockPending {
+  items?: SaleLine[];
   businessName: string;
   amount: number;
   phoneMasked: string;

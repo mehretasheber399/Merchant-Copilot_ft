@@ -26,16 +26,42 @@ export function SaleResult({
           {late ? <p className="font-semibold text-warning">{t('late')}</p> : null}
           <ul className="grid gap-2 rounded-card border border-line bg-surface p-4">
             {sale.items.map((item) => (
-              <li key={`${item.productId}-${item.name}`} className="flex justify-between gap-3">
-                <span>
-                  {item.name} × {item.qty}
+              <li
+                key={`${item.productId}-${item.name}`}
+                className="flex items-start justify-between gap-3"
+              >
+                <span className="min-w-0">
+                  <span className="block truncate font-semibold">{item.name}</span>
+                  <span className="text-sm text-muted">
+                    {item.qty} × {formatMoney(item.price, locale)}
+                  </span>
                 </span>
-                <span className="font-semibold">{formatMoney(item.price * item.qty, locale)}</span>
+                <span className="shrink-0 font-semibold tabular-nums">
+                  {formatMoney(item.price * item.qty, locale)}
+                </span>
               </li>
             ))}
           </ul>
-          <p className="text-2xl font-bold text-primary">{formatMoney(sale.amount, locale)}</p>
-          {paidAt ? <p>{formatTime(paidAt, locale)}</p> : null}
+          <p className="flex justify-between text-2xl font-bold text-primary">
+            <span>{t('total', { defaultValue: 'Total' })}</span>
+            <span className="tabular-nums">{formatMoney(sale.amount, locale)}</span>
+          </p>
+          <dl className="grid gap-1 text-sm text-muted">
+            <div className="flex justify-between gap-3">
+              <dt>{t('customer', { defaultValue: 'Customer' })}</dt>
+              <dd>{sale.phoneMasked}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt>{t('receiptNo', { defaultValue: 'Receipt no.' })}</dt>
+              <dd>#{sale.requestId.slice(0, 8)}</dd>
+            </div>
+            {paidAt ? (
+              <div className="flex justify-between gap-3">
+                <dt>{t('paidAt', { defaultValue: 'Paid at' })}</dt>
+                <dd>{formatTime(paidAt, locale)}</dd>
+              </div>
+            ) : null}
+          </dl>
         </>
       ) : null}
       {sale.status === 'DECLINED' ? (

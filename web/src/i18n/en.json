@@ -213,7 +213,9 @@
     "requestLabel": "Payment request",
     "open": "Open",
     "requestMissing": "Paste the payment request.",
-    "secondsLeft": "{{count}}s left"
+    "secondsLeft": "{{count}}s left",
+    "itemsTitle": "Items",
+    "receiptTotal": "Total"
   },
   "reports": {
     "title": "Reports",

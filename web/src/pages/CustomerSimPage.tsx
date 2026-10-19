@@ -10,8 +10,10 @@ import type { SimFailure } from '../features/simulator/errors';
 import { canConfirm } from '../features/simulator/pin';
 import { useCustomerSim } from '../features/simulator/useCustomerSim';
 import { useLocaleStore } from '../store/locale';
-import type { SaleStatus } from '../shared/types';
+import type { SaleLine, SaleStatus } from '../shared/types';
 import { formatMoney } from '../utils/format';
+import { useQuery } from '@tanstack/react-query';
+import { getMockPending } from '../api/endpoints';
 
 function failureText(failure: SimFailure): string {
   if (failure.kind === 'network') {
@@ -66,8 +68,63 @@ function PhoneShell({ header, children }: { header: ReactNode; children: ReactNo
   );
 }
 
-function Outcome({ status, onRetry }: { status: SaleStatus; onRetry?: () => void }) {
+function ItemsList({
+  items,
+  amount,
+  businessName,
+  locale,
+}: {
+  items: SaleLine[];
+  amount: number;
+  businessName?: string;
+  locale: Parameters<typeof formatMoney>[1];
+}) {
   const { t } = useTranslation('simulator');
+  if (items.length === 0) {
+    return null;
+  }
+  return (
+    <section aria-label={t('itemsTitle')} className="rounded-card border border-line p-3">
+      <h2 className="text-base font-semibold">{t('itemsTitle')}</h2>
+      {businessName ? <p className="mb-2 text-sm text-muted">{businessName}</p> : null}
+      <ul className="grid gap-2">
+        {items.map((item) => (
+          <li key={item.productId} className="flex items-start justify-between gap-3 text-sm">
+            <span className="min-w-0">
+              <span className="block truncate font-semibold">{item.name}</span>
+              <span className="text-xs text-muted">
+                {item.qty} × {formatMoney(item.price, locale)}
+              </span>
+            </span>
+            <span className="shrink-0 font-semibold tabular-nums">
+              {formatMoney(item.price * item.qty, locale)}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 flex justify-between border-t border-line pt-2 text-base font-bold">
+        <span>{t('receiptTotal')}</span>
+        <span className="tabular-nums">{formatMoney(amount, locale)}</span>
+      </p>
+    </section>
+  );
+}
+
+function Outcome({
+  status,
+  onRetry,
+  items = [],
+  amount = 0,
+  businessName,
+}: {
+  status: SaleStatus;
+  onRetry?: () => void;
+  items?: SaleLine[];
+  amount?: number;
+  businessName?: string;
+}) {
+  const { t } = useTranslation('simulator');
+  const locale = useLocaleStore((state) => state.locale);
   const heading = useRef<HTMLHeadingElement>(null);
   const label = statusText(status);
 
@@ -86,6 +143,9 @@ function Outcome({ status, onRetry }: { status: SaleStatus; onRetry?: () => void
       <p role="status" className="text-lg font-semibold">
         {label}
       </p>
+      {status === 'PAID' ? (
+        <ItemsList items={items} amount={amount} businessName={businessName} locale={locale} />
+      ) : null}
       {onRetry ? <Button onClick={onRetry}>{t('retry')}</Button> : null}
     </PhoneShell>
   );
@@ -129,6 +189,15 @@ export function CustomerSimPage() {
   const [params, setParams] = useSearchParams();
   const requestId = params.get('requestId')?.trim() || null;
   const screen = useCustomerSim(requestId);
+  const info = useQuery({
+    queryKey: ['mock-pending-items', requestId],
+    queryFn: () => getMockPending(requestId as string),
+    enabled: Boolean(requestId),
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+  const items = info.data?.items ?? [];
   const openRequest = (id: string) => {
     setParams({ requestId: id }, { replace: true });
   };
@@ -171,7 +240,15 @@ export function CustomerSimPage() {
   }
 
   if (screen.phase === 'final') {
-    return <Outcome status={screen.status} onRetry={screen.retry} />;
+    return (
+      <Outcome
+        status={screen.status}
+        onRetry={screen.retry}
+        items={items}
+        amount={info.data?.amount}
+        businessName={info.data?.businessName}
+      />
+    );
   }
 
   return (
@@ -200,6 +277,12 @@ export function CustomerSimPage() {
           {failureText(screen.failure)}
         </p>
       ) : null}
+      <ItemsList
+        items={items}
+        amount={screen.amount}
+        businessName={screen.businessName}
+        locale={locale}
+      />
       {config.demoTools ? <p className="text-sm text-muted">{t('hint')}</p> : null}
       <PinPad
         value={screen.pin}

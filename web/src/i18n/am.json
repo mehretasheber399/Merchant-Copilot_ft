@@ -233,7 +233,9 @@
     "requestLabel": "የክፍያ ጥያቄ",
     "open": "ክፈት",
     "requestMissing": "የክፍያ ጥያቄውን ያስገቡ።",
-    "secondsLeft": "{{count}} ሰከንድ ቀርቷል"
+    "secondsLeft": "{{count}} ሰከንድ ቀርቷል",
+    "itemsTitle": "እቃዎች",
+    "receiptTotal": "ጠቅላላ"
   },
   "reports": {
     "title": "ሪፖርት",
