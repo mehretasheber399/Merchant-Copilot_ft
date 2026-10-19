@@ -142,6 +142,11 @@ export function useSaleScreen() {
       }
     },
     phoneError,
+    blurPhone: () => {
+      if (phone.trim().length > 0 && !isValidPhone(phone)) {
+        setPhoneError(true);
+      }
+    },
     failure,
     cancelFailure,
     requestId,

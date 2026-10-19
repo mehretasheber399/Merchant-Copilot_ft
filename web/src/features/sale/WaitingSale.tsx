@@ -24,9 +24,10 @@ export function WaitingSale({
   return (
     <section aria-live="polite" className="grid gap-4">
       <h1 className="text-2xl font-semibold">{t('waiting')}</h1>
-      <div className="rounded-card bg-primary px-4 py-5 text-primary-foreground shadow-[0_14px_30px_rgba(0,107,60,0.28)]">
-        <p className="text-3xl font-bold">{formatMoney(sale.amount, locale)}</p>
-        <p className="mt-1 text-sm">{sale.phoneMasked}</p>
+      <div className="rounded-[15px] bg-[#173E2D] px-4 py-5 text-center text-primary-foreground">
+        <p className="text-xs text-[#B1CEBF]">{t('waiting')}</p>
+        <p className="mt-2 text-[28px] font-bold">{formatMoney(sale.amount, locale)}</p>
+        <p className="mt-1 text-sm text-[#B1CEBF]">{sale.phoneMasked}</p>
       </div>
       <p role="status">{t('secondsLeft', { count: seconds })}</p>
       {sale.warnings.length > 0 ? (

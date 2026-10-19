@@ -28,8 +28,10 @@ describe('sale logic', () => {
     expect(isValidPhone('+251912345678')).toBe(true);
     expect(isValidPhone('+251712345678')).toBe(true);
     expect(isValidPhone('251912345678')).toBe(true);
-    expect(isValidPhone('2519123456789')).toBe(true);
+    expect(isValidPhone('2519123456789')).toBe(false);
     expect(isValidPhone(' 0912345678 ')).toBe(true);
+    expect(isValidPhone('+251 912 345 678')).toBe(true);
+    expect(isValidPhone('0912-345-678')).toBe(true);
     expect(isValidPhone('0812345678')).toBe(false);
     expect(isValidPhone('09123')).toBe(false);
     expect(isValidPhone('+251812345678')).toBe(false);

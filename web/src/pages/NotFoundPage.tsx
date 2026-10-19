@@ -10,7 +10,7 @@ export function NotFoundPage() {
       <h1 className="text-2xl font-extrabold tracking-tight">{t('notFound')}</h1>
       <Link
         to={token ? '/dashboard' : '/login'}
-        className="inline-flex min-h-14 items-center justify-center rounded-[18px] bg-primary px-4 font-bold text-primary-foreground shadow-shell"
+        className="inline-flex min-h-12 items-center justify-center rounded-xl bg-primary px-4 font-bold text-primary-foreground shadow-shell"
       >
         {token ? t('goDashboard') : t('goLogin')}
       </Link>

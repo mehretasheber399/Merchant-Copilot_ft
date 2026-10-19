@@ -4,6 +4,7 @@ import { exportReport, getReportSummary } from '../../api/endpoints';
 import { useOnline } from '../../hooks/useOnline';
 import i18n from '../../i18n';
 import type { DashboardRange } from '../../shared/types';
+import { useLocaleStore } from '../../store/locale';
 import { chosenFilename, datedReportName, saveBlob } from '../../utils/download';
 
 const STALE_MS = 10_000;
@@ -27,7 +28,7 @@ export function useReportsScreen() {
     mutationFn: async (format: 'csv' | 'pdf') => {
       setDownloading(format);
       setDownloadError(false);
-      const file = await exportReport(range, format);
+      const file = await exportReport(range, format, useLocaleStore.getState().locale);
       saveBlob(file.blob, chosenFilename(file.filename, datedReportName(range, format)));
     },
     onError: () => {

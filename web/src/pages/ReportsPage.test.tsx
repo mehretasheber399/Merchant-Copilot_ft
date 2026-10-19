@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { I18nextProvider } from 'react-i18next';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ApiError } from '../api/client';
-import { exportReport, getReportSummary } from '../api/endpoints';
+import { exportReport, getReportSummary, listProducts } from '../api/endpoints';
 import i18n from '../i18n';
 import { ReportsPage } from './ReportsPage';
 
@@ -14,11 +14,13 @@ vi.mock('../api/endpoints', async () => {
     ...actual,
     getReportSummary: vi.fn(),
     exportReport: vi.fn(),
+    listProducts: vi.fn(),
   };
 });
 
 const getReportSummaryMock = vi.mocked(getReportSummary);
 const exportReportMock = vi.mocked(exportReport);
+const listProductsMock = vi.mocked(listProducts);
 
 function renderReports() {
   const client = new QueryClient({
@@ -43,6 +45,7 @@ describe('reports', () => {
     exportReportMock.mockRejectedValue(
       new ApiError({ code: 'INTERNAL', message: 'no', status: 500 }),
     );
+    listProductsMock.mockResolvedValue([]);
   });
 
   it('shows a retryable error and a download failure', async () => {
@@ -53,7 +56,7 @@ describe('reports', () => {
     await waitFor(() => {
       expect(getReportSummaryMock.mock.calls.length).toBeGreaterThan(1);
     });
-    await user.click(screen.getByRole('button', { name: 'Download CSV' }));
+    await user.click(screen.getByRole('button', { name: 'Download report' }));
     expect(await screen.findByText('Download failed. Try again.')).toBeInTheDocument();
   });
 });

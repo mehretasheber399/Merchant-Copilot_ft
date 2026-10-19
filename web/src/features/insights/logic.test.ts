@@ -11,6 +11,7 @@ import {
   runningTotal,
   sortInsights,
   suggestionLines,
+  briefingLines,
   textOf,
 } from './logic';
 
@@ -35,6 +36,12 @@ describe('insight logic', () => {
     expect(textOf({ en: 'Oil', am: 'ዘይት' }, 'am')).toBe('ዘይት');
     expect(textOf({ en: 'Oil', am: '  ' }, 'am')).toBe('Oil');
     expect(textOf(undefined, 'en')).toBe('');
+    expect(
+      briefingLines(
+        'Today in your business: Collected 320 ETB. Stock is tight.',
+        'Today in your business',
+      ),
+    ).toEqual(['Collected 320 ETB.', 'Stock is tight.']);
     const ordered = sortInsights([
       insight({ priority: 3, id: 'c' }),
       insight({ priority: 1, id: 'a' }),

@@ -14,6 +14,25 @@ export interface PickedLine {
   qty: number;
 }
 
+export function briefingLines(body: string, title: string): string[] {
+  let text = body.trim();
+  const heading = title.trim();
+  if (heading && text.toLowerCase().startsWith(heading.toLowerCase())) {
+    text = text
+      .slice(heading.length)
+      .replace(/^[\s:：—-]+/, '')
+      .trim();
+  }
+  if (!text) {
+    return [];
+  }
+  const parts = text
+    .split(/(?<=[.!?።])\s+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  return parts.length > 0 ? parts : [text];
+}
+
 export function textOf(value: Pick<Bilingual, 'en' | 'am'> | undefined, locale: Locale): string {
   if (!value) {
     return '';

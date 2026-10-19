@@ -40,38 +40,45 @@ export function EvidenceDrawer({
         </div>
       ) : null}
       {evidence.isSuccess ? (
-        <div className="grid gap-4">
+        <div className="grid gap-5">
           <section aria-label={t('calc')}>
-            <h3 className="text-lg font-semibold">{t('calc')}</h3>
+            <h3 className="text-sm font-bold text-muted">{t('calc')}</h3>
             {calc.length === 0 ? (
-              <p className="mt-2">{t('emptyCalc')}</p>
+              <p className="mt-2 text-sm">{t('emptyCalc')}</p>
             ) : (
-              <dl className="mt-2 grid gap-2">
+              <ul className="mt-3 grid grid-cols-2 gap-2">
                 {calc.map((step, index) => (
-                  <div key={`${textOf(step.label, locale)}-${index}`} className="min-w-0">
-                    <dt className="break-words text-sm font-semibold text-muted">
-                      {textOf(step.label, locale)}
-                    </dt>
-                    <dd className="break-words text-base font-semibold">
+                  <li
+                    key={`${textOf(step.label, locale)}-${index}`}
+                    className="rounded-2xl bg-primary-soft px-3 py-4 text-center"
+                  >
+                    <p className="text-2xl font-extrabold tabular-nums text-primary">
                       {formatCalcValue(step.value)}
-                    </dd>
-                  </div>
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-ink">
+                      {textOf(step.label, locale)}
+                    </p>
+                  </li>
                 ))}
-              </dl>
+              </ul>
             )}
           </section>
           <section aria-label={t('supporting')}>
-            <h3 className="text-lg font-semibold">{t('supporting')}</h3>
+            <h3 className="text-sm font-bold text-muted">{t('supporting')}</h3>
             {transactions.length === 0 ? (
-              <p className="mt-2">{t('emptyEvidence')}</p>
+              <p className="mt-2 text-sm">{t('emptyEvidence')}</p>
             ) : (
-              <ul className="mt-2 grid gap-2">
+              <ul className="mt-3 grid gap-2">
                 {transactions.map((row) => (
-                  <li key={row.id} className="rounded-control border border-line px-3 py-2">
-                    <p className="font-semibold">{formatMoney(row.amount, locale)}</p>
-                    <p className="text-sm text-muted">{formatTime(row.timestamp, locale)}</p>
+                  <li key={row.id} className="rounded-2xl border border-line bg-surface px-3 py-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-lg font-extrabold tabular-nums text-primary">
+                        {formatMoney(row.amount, locale)}
+                      </p>
+                      <p className="text-xs text-muted">{formatTime(row.timestamp, locale)}</p>
+                    </div>
                     {(row.items ?? []).length > 0 ? (
-                      <ul className="mt-1 text-sm">
+                      <ul className="mt-2 grid gap-1 text-sm text-muted">
                         {row.items.map((item) => (
                           <li key={`${row.id}-${item.name}-${item.qty}`}>
                             {t('line', { name: item.name, qty: item.qty })}

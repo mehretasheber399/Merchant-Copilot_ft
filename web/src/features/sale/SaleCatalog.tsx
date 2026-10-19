@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ProductMark } from '../../components/ProductMark';
 import type { ProductView, StockStatus } from '../../shared/types';
 import { useLocaleStore } from '../../store/locale';
 import { formatMoney } from '../../utils/format';
@@ -7,10 +8,10 @@ import { filterProducts, isStockShort } from './logic';
 import type { CartLine } from '../../store/cart';
 
 const stockClass: Record<StockStatus, string> = {
-  low: 'bg-warning-soft text-warning',
-  out: 'bg-danger-soft text-danger',
-  untracked: 'border border-line bg-canvas text-muted',
-  ok: 'bg-success-soft text-success',
+  low: 'text-warning',
+  out: 'text-danger',
+  untracked: 'text-muted',
+  ok: 'text-muted',
 };
 
 const stockKey = {
@@ -52,19 +53,34 @@ export function SaleCatalog({
   return (
     <div>
       <label className="grid gap-1 text-sm font-semibold">
-        {t('sale:search')}
-        <input
-          className="min-h-[52px] rounded-2xl border border-line bg-surface px-4 text-base font-medium"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-        />
+        <span className="sr-only">{t('sale:search')}</span>
+        <span className="flex h-12 items-center gap-2 rounded-xl border border-line bg-surface px-3 text-muted">
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            className="h-5 w-5 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-4-4" />
+          </svg>
+          <input
+            className="min-w-0 flex-1 bg-transparent text-base font-medium text-ink outline-none"
+            placeholder={t('sale:search')}
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
+        </span>
       </label>
       {categories.length > 0 ? (
-        <div className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 pb-1">
+        <div className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1">
           <button
             type="button"
             aria-pressed={category === 'all'}
-            className={`inline-flex min-h-12 shrink-0 items-center rounded-full border px-4 text-sm font-semibold ${category === 'all' ? 'border-primary bg-primary text-primary-foreground shadow-shell' : 'border-line bg-surface text-muted'}`}
+            className={`inline-flex min-h-12 shrink-0 items-center rounded-full border px-4 text-sm font-semibold ${category === 'all' ? 'border-primary bg-primary text-primary-foreground' : 'border-line bg-surface text-muted'}`}
             onClick={() => setCategory('all')}
           >
             {t('sale:all')}
@@ -74,7 +90,7 @@ export function SaleCatalog({
               key={name}
               type="button"
               aria-pressed={category === name}
-              className={`inline-flex min-h-12 shrink-0 items-center rounded-full border px-4 text-sm font-semibold ${category === name ? 'border-primary bg-primary text-primary-foreground shadow-shell' : 'border-line bg-surface text-muted'}`}
+              className={`inline-flex min-h-12 shrink-0 items-center rounded-full border px-4 text-sm font-semibold ${category === name ? 'border-primary bg-primary text-primary-foreground' : 'border-line bg-surface text-muted'}`}
               onClick={() => setCategory(name)}
             >
               {name}
@@ -83,69 +99,65 @@ export function SaleCatalog({
         </div>
       ) : null}
       {visible.length === 0 ? <p className="mt-6">{t('sale:noResults')}</p> : null}
-      <ul className="mt-4 grid gap-3">
+      <ul className="mt-3 grid grid-cols-2 gap-3">
         {visible.map((product) => {
           const name = productName(product, locale);
           const qty = lines.find((line) => line.productId === product.id)?.qty ?? 0;
           const short = isStockShort(product, qty);
+          const selected = qty > 0;
           return (
-            <li key={product.id} className="rounded-card border border-line bg-surface p-3">
-              <div className="flex items-center gap-3">
+            <li
+              key={product.id}
+              className={`min-w-0 rounded-2xl border bg-surface p-3 ${selected ? 'border-primary shadow-[inset_0_0_0_1px_#087A49]' : 'border-line'}`}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <ProductMark name={name} large />
                 <span
-                  aria-hidden="true"
-                  className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary-soft text-lg font-extrabold text-primary"
+                  data-stock={product.stockStatus}
+                  className={`text-right text-[11px] font-semibold ${stockClass[product.stockStatus]}`}
                 >
-                  {name.slice(0, 1)}
+                  {product.stockStatus === 'out'
+                    ? t('items:stockOut')
+                    : `${product.stock !== undefined ? `${product.stock} ` : ''}${t(`items:${stockKey[product.stockStatus]}`)}`}
                 </span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold">{name}</p>
-                  <p className="truncate text-sm text-muted">
-                    {product.category}
-                    {product.stock !== undefined ? ` · ${product.stock}` : ''}
-                  </p>
-                  <p className="font-extrabold tabular-nums text-primary">
-                    {formatMoney(product.price, locale)}
-                  </p>
-                  <span
-                    data-stock={product.stockStatus}
-                    className={`mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-bold ${stockClass[product.stockStatus]}`}
-                  >
-                    {t(`items:${stockKey[product.stockStatus]}`)}
-                  </span>
-                </div>
-                {qty === 0 ? (
+              </div>
+              <p className="mt-3 truncate text-sm font-bold">{name}</p>
+              <p className="truncate text-xs text-muted">{product.category}</p>
+              <p className="mt-2 text-sm font-bold tabular-nums">
+                {formatMoney(product.price, locale)}
+              </p>
+              {qty === 0 ? (
+                <button
+                  type="button"
+                  className="mt-3 inline-flex h-12 w-full items-center justify-center gap-1 rounded-[10px] bg-primary-soft text-sm font-bold text-primary"
+                  onClick={() => onAdd(product.id, product.price)}
+                >
+                  {t('sale:add')}
+                </button>
+              ) : (
+                <div className="mt-3 grid h-12 grid-cols-[48px_1fr_48px] items-center rounded-[10px] bg-primary-soft text-primary">
                   <button
                     type="button"
-                    className="inline-flex h-12 min-w-[76px] shrink-0 items-center justify-center rounded-full bg-primary px-5 font-bold text-primary-foreground active:scale-95"
-                    onClick={() => onAdd(product.id, product.price)}
+                    className="grid h-12 place-items-center text-xl font-bold"
+                    aria-label={t('sale:decrease', { name })}
+                    onClick={() => onChange(product.id, -1)}
                   >
-                    {t('sale:add')}
+                    −
                   </button>
-                ) : (
-                  <div className="flex shrink-0 items-center gap-1 rounded-full bg-primary-soft p-1">
-                    <button
-                      type="button"
-                      className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-surface text-xl font-extrabold text-primary"
-                      aria-label={t('sale:decrease', { name })}
-                      onClick={() => onChange(product.id, -1)}
-                    >
-                      −
-                    </button>
-                    <span className="min-w-[22px] text-center font-bold tabular-nums">{qty}</span>
-                    <button
-                      type="button"
-                      className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-surface text-xl font-extrabold text-primary disabled:opacity-60"
-                      aria-label={t('sale:increase', { name })}
-                      disabled={qty >= 99}
-                      onClick={() => onChange(product.id, 1)}
-                    >
-                      +
-                    </button>
-                  </div>
-                )}
-              </div>
+                  <span className="text-center text-sm font-bold tabular-nums">{qty}</span>
+                  <button
+                    type="button"
+                    className="grid h-12 place-items-center text-xl font-bold disabled:opacity-60"
+                    aria-label={t('sale:increase', { name })}
+                    disabled={qty >= 99}
+                    onClick={() => onChange(product.id, 1)}
+                  >
+                    +
+                  </button>
+                </div>
+              )}
               {short ? (
-                <p className="mt-2 text-sm font-semibold text-warning">
+                <p className="mt-2 text-xs font-semibold text-warning">
                   {t('sale:stockWarning', { count: product.stock ?? 0 })}
                 </p>
               ) : null}

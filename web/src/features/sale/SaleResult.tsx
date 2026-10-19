@@ -31,7 +31,9 @@ export function SaleResult({
                 className="flex items-start justify-between gap-3"
               >
                 <span className="min-w-0">
-                  <span className="block truncate font-semibold">{item.name}</span>
+                  <span className="block truncate font-semibold">
+                    {item.name} × {item.qty}
+                  </span>
                   <span className="text-sm text-muted">
                     {item.qty} × {formatMoney(item.price, locale)}
                   </span>
@@ -42,22 +44,26 @@ export function SaleResult({
               </li>
             ))}
           </ul>
-          <p className="flex justify-between text-2xl font-bold text-primary">
-            <span>{t('total', { defaultValue: 'Total' })}</span>
-            <span className="tabular-nums">{formatMoney(sale.amount, locale)}</span>
-          </p>
+          <div className="rounded-[15px] bg-primary px-4 py-5 text-primary-foreground">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-sm text-[#B9DDC9]">{t('total')}</span>
+              <span className="text-[28px] font-bold tabular-nums">
+                {formatMoney(sale.amount, locale)}
+              </span>
+            </div>
+          </div>
           <dl className="grid gap-1 text-sm text-muted">
             <div className="flex justify-between gap-3">
-              <dt>{t('customer', { defaultValue: 'Customer' })}</dt>
+              <dt>{t('customer')}</dt>
               <dd>{sale.phoneMasked}</dd>
             </div>
             <div className="flex justify-between gap-3">
-              <dt>{t('receiptNo', { defaultValue: 'Receipt no.' })}</dt>
+              <dt>{t('receiptNo')}</dt>
               <dd>#{sale.requestId.slice(0, 8)}</dd>
             </div>
             {paidAt ? (
               <div className="flex justify-between gap-3">
-                <dt>{t('paidAt', { defaultValue: 'Paid at' })}</dt>
+                <dt>{t('paidAt')}</dt>
                 <dd>{formatTime(paidAt, locale)}</dd>
               </div>
             ) : null}

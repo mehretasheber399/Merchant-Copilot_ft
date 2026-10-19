@@ -17,8 +17,12 @@ export function SantimClip({ className }: { className?: string }) {
       void video.play().catch(() => undefined);
     };
     sync();
+    video.addEventListener('canplay', sync);
     media.addEventListener('change', sync);
-    return () => media.removeEventListener('change', sync);
+    return () => {
+      video.removeEventListener('canplay', sync);
+      media.removeEventListener('change', sync);
+    };
   }, []);
 
   return (

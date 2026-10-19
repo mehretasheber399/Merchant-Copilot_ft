@@ -90,10 +90,13 @@ describe('items screen', () => {
 
     expect(await screen.findByText('In stock')).toBeInTheDocument();
     expect(screen.getByText('Low')).toBeInTheDocument();
-    expect(screen.getByText('Out')).toBeInTheDocument();
+    expect(screen.getByText('Out of stock')).toBeInTheDocument();
     expect(screen.getByText('No stock')).toBeInTheDocument();
     expect(screen.getByText('Low').closest('[data-stock]')).toHaveAttribute('data-stock', 'low');
-    expect(screen.getByText('Out').closest('[data-stock]')).toHaveAttribute('data-stock', 'out');
+    expect(screen.getByText('Out of stock').closest('[data-stock]')).toHaveAttribute(
+      'data-stock',
+      'out',
+    );
     expect(screen.getByText('No stock').closest('[data-stock]')).toHaveAttribute(
       'data-stock',
       'untracked',
@@ -112,9 +115,9 @@ describe('items screen', () => {
     createProductMock.mockResolvedValue(created);
     renderItems();
 
-    await user.click(await screen.findByRole('button', { name: 'Add item' }));
+    await user.click(await screen.findByRole('button', { name: 'Add product' }));
     await user.type(screen.getByLabelText('Name'), 'Bread');
-    await user.type(screen.getByLabelText('Price'), '25');
+    await user.type(screen.getByLabelText('Selling price'), '25');
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(createProductMock).toHaveBeenCalledWith({ name: 'Bread', price: 25 });
@@ -126,15 +129,15 @@ describe('items screen', () => {
     listProductsMock.mockResolvedValue([]);
     renderItems();
 
-    await user.click(await screen.findByRole('button', { name: 'Add item' }));
+    await user.click(await screen.findByRole('button', { name: 'Add product' }));
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(screen.getByText('Enter a name.')).toBeInTheDocument();
-    expect(screen.getByText('Enter a price.')).toBeInTheDocument();
+    expect(screen.getByText('Enter a selling price.')).toBeInTheDocument();
 
     await user.type(screen.getByRole('textbox', { name: /^Name/ }), 'Bread');
-    await user.type(screen.getByRole('textbox', { name: /^Price/ }), '12.5');
-    await user.type(screen.getByRole('textbox', { name: /^Cost/ }), '1.5');
+    await user.type(screen.getByRole('textbox', { name: /^Selling price/ }), '12.5');
+    await user.type(screen.getByRole('textbox', { name: /^Buying price/ }), '1.5');
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(screen.getAllByText('Use a whole number.')).toHaveLength(2);
@@ -178,7 +181,7 @@ describe('items screen', () => {
 
     await user.click(screen.getByRole('button', { name: 'Select none' }));
     await user.click(screen.getByRole('button', { name: 'Add selected' }));
-    expect(screen.getByText('Select at least one item.')).toBeInTheDocument();
+    expect(screen.getByText('Select at least one product.')).toBeInTheDocument();
     expect(applyStarterTemplateMock).not.toHaveBeenCalled();
 
     await user.click(screen.getByRole('button', { name: 'Select all' }));
@@ -199,7 +202,7 @@ describe('items screen', () => {
     renderItems();
 
     await user.click(await screen.findByRole('button', { name: 'Use starter list' }));
-    const price = await screen.findByRole('textbox', { name: 'Price Sugar' });
+    const price = await screen.findByRole('textbox', { name: 'Selling price Sugar' });
     await user.clear(price);
     await user.type(price, '90');
     await user.click(screen.getByRole('button', { name: 'Add selected' }));
