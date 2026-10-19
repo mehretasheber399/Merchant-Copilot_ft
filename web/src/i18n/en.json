@@ -289,6 +289,10 @@
     "autoSuggested": "Rough figure",
     "unmapped": "Not matched"
   },
+  "payment": {
+    "live": "LIVE M-PESA SANDBOX",
+    "simulated": "SIMULATED"
+  },
   "demo": {
     "title": "Demo",
     "reset": "Reset demo data",
@@ -304,6 +308,11 @@
     "drainPick": "Choose an item",
     "drained": "Stock left: {{count}}",
     "emptyProducts": "No items to drain.",
-    "unavailable": "Demo tools are off on the server."
+    "unavailable": "Demo tools are off on the server.",
+    "paymentMode": "Payment mode",
+    "confirmLive": "New sales will use the real M-PESA sandbox. Continue?",
+    "confirmSimulated": "New sales will use simulated payments. Continue?",
+    "switchYes": "Switch now",
+    "modeUpdated": "Payment mode updated"
   }
 }

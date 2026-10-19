@@ -8,6 +8,8 @@ import type {
   DashboardView,
   DemoResetResult,
   DirectPaymentResult,
+  GatewayMode,
+  GatewayModeView,
   HoursView,
   InsightEvidence,
   InsightsPayload,
@@ -235,6 +237,17 @@ export function exportReport(range: DashboardRange, format: 'csv' | 'pdf', lang:
 
 export function resetDemo(): Promise<DemoResetResult> {
   return apiRequest<DemoResetResult>('/demo/reset', { method: 'POST' });
+}
+
+export function getGatewayMode(): Promise<GatewayModeView> {
+  return apiRequest<GatewayModeView>('/demo/gateway');
+}
+
+export function setGatewayMode(mode: GatewayMode): Promise<GatewayModeView> {
+  return apiRequest<GatewayModeView>('/demo/gateway', {
+    method: 'POST',
+    body: { mode },
+  });
 }
 
 export async function simulateSale(productIds?: string[]): Promise<SaleRequestView> {

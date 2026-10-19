@@ -329,6 +329,15 @@
     "drainPick": "እቃ ይምረጡ",
     "drained": "ቀሪ ክምችት፡ {{count}}",
     "emptyProducts": "የሚጣጥ እቃ የለም።",
-    "unavailable": "የሙከራ መሳሪያዎች በአገልጋዩ ጠፍተዋል።"
+    "unavailable": "የሙከራ መሳሪያዎች በአገልጋዩ ጠፍተዋል።",
+    "paymentMode": "የክፍያ ሁነታ",
+    "confirmLive": "አዲስ ሽያጮች እውነተኛውን የM-PESA ሳንድቦክስ ይጠቀማሉ። ይቀጥሉ?",
+    "confirmSimulated": "አዲስ ሽያጮች የተመሰለ ክፍያ ይጠቀማሉ። ይቀጥሉ?",
+    "switchYes": "አሁን ቀይር",
+    "modeUpdated": "የክፍያ ሁነታ ተዘምኗል"
+  },
+  "payment": {
+    "live": "የቀጥታ M-PESA ሳንድቦክስ",
+    "simulated": "የተመሰለ"
   }
 }

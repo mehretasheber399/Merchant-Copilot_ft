@@ -20,6 +20,15 @@ export type MappingSource = 'cart' | 'auto-suggested' | 'manual' | 'unmapped';
 
 export type Confidence = 'exact' | 'estimate';
 
+export type GatewayMode = 'mock' | 'mpesa';
+
+export type GatewayModeState = GatewayMode | 'unknown';
+
+export interface GatewayModeView {
+  mode: GatewayModeState;
+  switchable: boolean;
+}
+
 export interface Merchant {
   id: string;
   businessName: string;
@@ -67,6 +76,7 @@ export interface SaleRequestView {
   warnings: string[];
   failureReason?: string;
   lateConfirmation?: boolean;
+  gateway?: GatewayMode;
 }
 
 export interface Bilingual {
