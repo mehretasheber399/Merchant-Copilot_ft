@@ -1,12 +1,27 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../components/ui/Button';
+import {
+  TransactionDetailsSheet,
+  type TransactionDetails,
+} from '../dashboard/TransactionDetailsSheet';
 import type { SaleRequestView } from '../../shared/types';
 import { useLocaleStore } from '../../store/locale';
-import { formatMoney, formatTime } from '../../utils/format';
+import { formatClock, formatMoney } from '../../utils/format';
 import { showLatePayment } from './logic';
 
-function itemCount(sale: SaleRequestView): number {
-  return sale.items.reduce((sum, item) => sum + item.qty, 0);
+function toDetails(
+  sale: SaleRequestView,
+  paidAt: string | null,
+  locale: 'en' | 'am',
+): TransactionDetails {
+  return {
+    id: sale.requestId,
+    amount: sale.amount,
+    customer: sale.phoneMasked,
+    itemCount: sale.items.reduce((sum, item) => sum + item.qty, 0),
+    timeLabel: paidAt ? formatClock(paidAt, locale) : '',
+  };
 }
 
 export function SaleResult({
@@ -21,119 +36,51 @@ export function SaleResult({
   const { t } = useTranslation('sale');
   const locale = useLocaleStore((state) => state.locale);
   const late = showLatePayment(sale.status, sale.lateConfirmation);
-  const receiptId = `#${sale.requestId.slice(0, 4)}`;
-  const count = itemCount(sale);
+  const [open, setOpen] = useState(sale.status === 'PAID');
 
-  const shareReceipt = () => {
-    const lines = [
-      t('transactionDetails'),
-      `${t('receiptNo')} ${receiptId}`,
-      formatMoney(sale.amount, locale),
-      `${t('customer')}: ${sale.phoneMasked}`,
-      `${t('itemsLabel')}: ${t('itemCount', { count })}`,
-      ...(paidAt ? [`${t('paidAt')}: ${formatTime(paidAt, locale)}`] : []),
-      `${t('paymentMethod')}: ${t('mpesa')}`,
-      ...sale.items.map((item) => `${item.name} × ${item.qty}`),
-    ];
-    const text = lines.join('\n');
-    if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
-      void navigator.share({ title: t('receipt'), text }).catch(() => undefined);
-      return;
+  useEffect(() => {
+    if (sale.status === 'PAID') {
+      setOpen(true);
     }
-    void navigator.clipboard?.writeText(text);
-  };
+  }, [sale.requestId, sale.status]);
 
   if (sale.status === 'PAID') {
     return (
       <section aria-live="polite" className="grid gap-4">
         {late ? <p className="font-semibold text-warning">{t('late')}</p> : null}
-        <div className="overflow-hidden rounded-[20px] border border-line bg-surface shadow-shell">
-          <div className="flex items-start justify-between gap-3 border-b border-line px-4 py-3">
-            <div className="min-w-0">
-              <h1 className="text-lg font-bold">{t('transactionDetails')}</h1>
-              <p className="mt-0.5 text-sm text-muted">{receiptId}</p>
-            </div>
-          </div>
-          <div className="grid place-items-center gap-2 px-4 pb-2 pt-6 text-center">
-            <span className="grid h-14 w-14 place-items-center rounded-full bg-primary text-primary-foreground">
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                className="h-7 w-7"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m5 12 5 5L20 7" />
-              </svg>
-            </span>
-            <p className="text-xs font-bold uppercase tracking-wide text-primary">{t('paid')}</p>
-            <p className="text-3xl font-extrabold tabular-nums">
-              {formatMoney(sale.amount, locale)}
-            </p>
-          </div>
-          <dl className="mx-4 mb-4 grid gap-3 border-t border-line pt-4">
-            <div className="flex justify-between gap-3 text-sm">
-              <dt className="text-muted">{t('customer')}</dt>
-              <dd className="font-bold">{sale.phoneMasked}</dd>
-            </div>
-            <div className="flex justify-between gap-3 text-sm">
-              <dt className="text-muted">{t('itemsLabel')}</dt>
-              <dd className="font-bold">{t('itemCount', { count })}</dd>
-            </div>
-            {paidAt ? (
-              <div className="flex justify-between gap-3 text-sm">
-                <dt className="text-muted">{t('paidAt')}</dt>
-                <dd className="font-bold">{formatTime(paidAt, locale)}</dd>
-              </div>
-            ) : null}
-            <div className="flex justify-between gap-3 text-sm">
-              <dt className="text-muted">{t('paymentMethod')}</dt>
-              <dd className="font-bold">{t('mpesa')}</dd>
-            </div>
-          </dl>
-          {sale.items.length > 0 ? (
-            <ul className="mx-4 mb-4 grid gap-2 border-t border-line pt-3">
-              {sale.items.map((item) => (
-                <li
-                  key={`${item.productId}-${item.name}`}
-                  className="flex justify-between gap-3 text-sm"
-                >
-                  <span className="min-w-0 truncate font-semibold">
-                    {item.name} × {item.qty}
-                  </span>
-                  <span className="shrink-0 tabular-nums text-muted">
-                    {formatMoney(item.price * item.qty, locale)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-          <div className="border-t border-line p-4">
-            <button
-              type="button"
-              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-primary bg-surface text-base font-bold text-primary"
-              onClick={shareReceipt}
+        <div className="grid place-items-center gap-2 rounded-[18px] border border-line bg-surface px-4 py-8 text-center">
+          <span className="grid h-14 w-14 place-items-center rounded-full bg-primary text-primary-foreground">
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              className="h-7 w-7"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                className="h-5 w-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z" />
-                <path d="M9 8h6M9 12h6" />
-              </svg>
-              {t('shareReceipt')}
-            </button>
-          </div>
+              <path d="m5 12 5 5L20 7" />
+            </svg>
+          </span>
+          <p className="text-sm font-semibold text-primary">{t('paid')}</p>
+          <p className="text-[28px] font-extrabold leading-none tabular-nums">
+            {formatMoney(sale.amount, locale)}
+          </p>
+          <button
+            type="button"
+            className="mt-2 inline-flex min-h-12 w-full items-center justify-center rounded-xl border border-line bg-surface text-base font-bold text-primary"
+            onClick={() => setOpen(true)}
+          >
+            {t('transactionDetails')}
+          </button>
         </div>
+        <TransactionDetailsSheet
+          open={open}
+          details={toDetails(sale, paidAt, locale)}
+          locale={locale}
+          onClose={() => setOpen(false)}
+        />
         <Button onClick={onNewSale}>{t('newSale')}</Button>
       </section>
     );

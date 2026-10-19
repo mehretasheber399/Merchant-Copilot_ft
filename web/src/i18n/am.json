@@ -119,7 +119,9 @@
     "paid": "ተከፍሏል",
     "itemsLabel": "እቃዎች",
     "paymentMethod": "ክፍያ",
-    "shareReceipt": "ደረሰኝ አጋራ"
+    "shareReceipt": "ደረሰኝ አጋራ",
+    "receiptItemCount_one": "{{count}} እቃ",
+    "receiptItemCount_other": "{{count}} እቃዎች"
   },
   "items": {
     "title": "ምርቶች",

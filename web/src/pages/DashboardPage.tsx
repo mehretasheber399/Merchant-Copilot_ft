@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
@@ -5,14 +6,20 @@ import { HoursChart } from '../features/dashboard/HoursChart';
 import { KpiTiles } from '../features/dashboard/KpiTiles';
 import { RangeSwitcher } from '../features/dashboard/RangeSwitcher';
 import { StockPanel } from '../features/dashboard/StockPanel';
+import {
+  TransactionDetailsSheet,
+  type TransactionDetails,
+} from '../features/dashboard/TransactionDetailsSheet';
 import { TopProducts } from '../features/dashboard/TopProducts';
 import { TransactionFeed } from '../features/dashboard/TransactionFeed';
 import { buildKpis, sellingProfit } from '../features/dashboard/logic';
 import { useDashboardScreen } from '../features/dashboard/useDashboardScreen';
 import { useProductList } from '../hooks/useProducts';
 import i18n from '../i18n';
+import type { TransactionRow } from '../shared/types';
 import { useAuthStore } from '../store/auth';
 import { useLocaleStore } from '../store/locale';
+import { formatClock } from '../utils/format';
 
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -48,9 +55,20 @@ export function DashboardPage() {
   const businessName = useAuthStore((state) => state.merchant?.businessName ?? '');
   const screen = useDashboardScreen();
   const catalog = useProductList('');
+  const [details, setDetails] = useState<TransactionDetails | null>(null);
   const model = buildKpis(screen.dashboard.data?.range ?? screen.range, screen.dashboard.data);
   const profit = sellingProfit(screen.products.data ?? [], catalog.data ?? []);
   const busy = screen.dashboard.isFetching;
+
+  const openTransaction = (row: TransactionRow) => {
+    setDetails({
+      id: row.id,
+      amount: row.amount,
+      customer: row.phoneMasked || '—',
+      itemCount: row.items.reduce((sum, item) => sum + item.qty, 0) || row.items.length,
+      timeLabel: formatClock(row.timestamp, locale),
+    });
+  };
   const dateLabel = new Intl.DateTimeFormat(locale === 'am' ? 'am-ET' : 'en-GB', {
     timeZone: 'Africa/Addis_Ababa',
     weekday: 'long',
@@ -170,8 +188,15 @@ export function DashboardPage() {
           hasMore={Boolean(screen.feed.hasNextPage)}
           loadingMore={screen.feed.isFetchingNextPage}
           onMore={() => void screen.feed.fetchNextPage()}
+          onOpen={openTransaction}
         />
       ) : null}
+      <TransactionDetailsSheet
+        open={details !== null}
+        details={details}
+        locale={locale}
+        onClose={() => setDetails(null)}
+      />
     </section>
   );
 }

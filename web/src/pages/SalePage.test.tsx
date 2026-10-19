@@ -251,8 +251,12 @@ describe('sale screen', () => {
       }),
     );
     expect(await screen.findByText('Payment arrived late - recorded')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Transaction details' })).toBeInTheDocument();
-    expect(screen.getByText('Sugar × 2')).toBeInTheDocument();
+    const receipt = screen.getByRole('dialog', { name: 'Transaction details' });
+    expect(receipt).toBeInTheDocument();
+    expect(receipt).toHaveTextContent('Paid');
+    expect(receipt).toHaveTextContent('2 items');
+    expect(receipt).toHaveTextContent('M-PESA');
+    expect(receipt).toHaveTextContent('Share receipt');
   });
 
   it('returns to the waiting sale after reload', async () => {

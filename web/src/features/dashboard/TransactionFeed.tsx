@@ -23,6 +23,7 @@ export function TransactionFeed({
   hasMore,
   loadingMore,
   onMore,
+  onOpen,
 }: {
   rows: TransactionRow[];
   locale: Locale;
@@ -30,6 +31,7 @@ export function TransactionFeed({
   hasMore: boolean;
   loadingMore: boolean;
   onMore: () => void;
+  onOpen: (row: TransactionRow) => void;
 }) {
   const { t } = useTranslation('dashboard');
   return (
@@ -50,44 +52,50 @@ export function TransactionFeed({
               <li
                 key={row.id}
                 data-flash={flashing ? 'true' : undefined}
-                className={`flex items-center gap-3 border-b border-line px-3 py-3 last:border-b-0 ${flashing ? 'bg-primary-soft' : ''}`}
+                className={`border-b border-line last:border-b-0 ${flashing ? 'bg-primary-soft' : ''}`}
               >
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[10px] bg-primary-soft text-primary">
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 24 24"
-                    className="h-5 w-5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z" />
-                    <path d="M9 8h6M9 12h6" />
-                  </svg>
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-semibold">{title}</span>
-                  <span className="block text-xs text-muted">
-                    {formatTime(row.timestamp, locale)}
+                <button
+                  type="button"
+                  className="flex min-h-12 w-full items-center gap-3 px-3 py-3 text-left"
+                  onClick={() => onOpen(row)}
+                >
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[10px] bg-primary-soft text-primary">
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      className="h-5 w-5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z" />
+                      <path d="M9 8h6M9 12h6" />
+                    </svg>
                   </span>
-                  {row.items.length > 0 ? (
-                    <span className="block truncate text-xs text-muted">
-                      {row.items
-                        .map((item) => t('line', { name: item.name, qty: item.qty }))
-                        .join(', ')}
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-semibold">{title}</span>
+                    <span className="block text-xs text-muted">
+                      {formatTime(row.timestamp, locale)}
                     </span>
-                  ) : null}
-                </span>
-                <span className="shrink-0 text-right">
-                  <span className="block text-sm font-bold tabular-nums">
-                    {formatMoney(row.amount, locale)}
+                    {row.items.length > 0 ? (
+                      <span className="block truncate text-xs text-muted">
+                        {row.items
+                          .map((item) => t('line', { name: item.name, qty: item.qty }))
+                          .join(', ')}
+                      </span>
+                    ) : null}
                   </span>
-                  <span className={`text-xs font-semibold ${badgeClass[kind]}`}>
-                    {t(badgeKey[kind])}
+                  <span className="shrink-0 text-right">
+                    <span className="block text-sm font-bold tabular-nums">
+                      {formatMoney(row.amount, locale)}
+                    </span>
+                    <span className={`text-xs font-semibold ${badgeClass[kind]}`}>
+                      {t(badgeKey[kind])}
+                    </span>
                   </span>
-                </span>
+                </button>
               </li>
             );
           })}

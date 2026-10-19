@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatDelta, formatMoney, formatPercent, formatTime } from './format';
+import { formatClock, formatDelta, formatMoney, formatPercent, formatTime } from './format';
 
 describe('formatters', () => {
   it('formats money in English and Amharic', () => {
@@ -18,5 +18,10 @@ describe('formatters', () => {
   it('formats times in Africa/Addis_Ababa', () => {
     expect(formatTime('2024-01-15T12:00:00.000Z', 'en')).toContain('15:00');
     expect(formatTime('not-a-date', 'en')).toBe('-');
+  });
+
+  it('formats receipt clock times', () => {
+    expect(formatClock('2024-01-15T07:42:00.000Z', 'en')).toMatch(/10:42/);
+    expect(formatClock('not-a-date', 'en')).toBe('-');
   });
 });

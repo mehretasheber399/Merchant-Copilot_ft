@@ -111,6 +111,8 @@
     "itemsLabel": "Items",
     "paymentMethod": "Payment",
     "shareReceipt": "Share receipt",
+    "receiptItemCount_one": "{{count}} item",
+    "receiptItemCount_other": "{{count}} items",
     "receiptNo": "Receipt no.",
     "paidAt": "Time",
     "clearSale": "Start a new sale"

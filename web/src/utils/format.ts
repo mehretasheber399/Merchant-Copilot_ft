@@ -36,3 +36,17 @@ export function formatTime(iso: string, locale: Locale): string {
     hourCycle: 'h23',
   }).format(date);
 }
+
+/** Clock-only label for receipts, e.g. "10:42 AM". */
+export function formatClock(iso: string, locale: Locale): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) {
+    return '-';
+  }
+  return new Intl.DateTimeFormat(locale === 'am' ? 'am-ET' : 'en-US', {
+    timeZone: ADDIS,
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  }).format(date);
+}
