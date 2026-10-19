@@ -28,11 +28,13 @@ describe('menu', () => {
     useAuthStore.getState().setSession('tok', { id: 'm1', businessName: 'Shop' });
   });
 
-  it('opens reports and hides the demo tools', async () => {
+  it('opens language and log out from the menu', async () => {
     const user = userEvent.setup();
     renderBar();
+    expect(screen.queryByRole('button', { name: 'Log out' })).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Menu' }));
-    expect(screen.getByRole('link', { name: 'Reports' })).toHaveAttribute('href', '/reports');
+    expect(screen.getByRole('group', { name: 'Language' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Log out' })).toBeInTheDocument();
     expect(screen.queryByRole('region', { name: 'Demo' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Reset demo data' })).not.toBeInTheDocument();
     expect(useAuthStore.getState().token).toBe('tok');

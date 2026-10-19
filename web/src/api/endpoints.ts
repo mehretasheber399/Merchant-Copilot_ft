@@ -229,8 +229,8 @@ export function getReportSummary(range: DashboardRange): Promise<ReportSummary> 
   return apiRequest<ReportSummary>(`/reports/summary${toQuery({ range })}`);
 }
 
-export function exportReport(range: DashboardRange, format: 'csv' | 'pdf') {
-  return downloadAuthorized(`/reports/export${toQuery({ range, format })}`, 60_000);
+export function exportReport(range: DashboardRange, format: 'csv' | 'pdf', lang: 'en' | 'am') {
+  return downloadAuthorized(`/reports/export${toQuery({ range, format, lang })}`, 60_000, lang);
 }
 
 export function resetDemo(): Promise<DemoResetResult> {

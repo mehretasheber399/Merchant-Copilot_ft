@@ -9,6 +9,7 @@ import {
   getDashboardHours,
   getStock,
   getTopProducts,
+  listProducts,
   listTransactions,
 } from '../api/endpoints';
 import { ToastViewport } from '../components/ui/Toast';
@@ -36,6 +37,7 @@ vi.mock('../api/endpoints', async () => {
     getTopProducts: vi.fn(),
     getStock: vi.fn(),
     listTransactions: vi.fn(),
+    listProducts: vi.fn(),
     getMe: vi.fn(),
   };
 });
@@ -45,6 +47,7 @@ const getHoursMock = vi.mocked(getDashboardHours);
 const getTopProductsMock = vi.mocked(getTopProducts);
 const getStockMock = vi.mocked(getStock);
 const listTransactionsMock = vi.mocked(listTransactions);
+const listProductsMock = vi.mocked(listProducts);
 
 class FakeEventSource {
   static instances: FakeEventSource[] = [];
@@ -179,14 +182,15 @@ describe('dashboard', () => {
     getTopProductsMock.mockResolvedValue([product()]);
     getStockMock.mockResolvedValue(stock());
     listTransactionsMock.mockResolvedValue(page([transaction('t1', 100)], null));
+    listProductsMock.mockResolvedValue([]);
   });
 
   it('shows today deltas, a null dash, and 24 chart buckets', async () => {
     renderDashboard();
-    expect(await screen.findByText('+12.5% vs yesterday')).toBeInTheDocument();
-    expect(screen.getByText('-4.0% vs same weekday')).toBeInTheDocument();
-    expect(screen.getByText('- vs 7-day average')).toBeInTheDocument();
-    expect(screen.getByText('92% of sales matched to items')).toBeInTheDocument();
+    expect(await screen.findByText('+12.5% compared with yesterday')).toBeInTheDocument();
+    expect(screen.getByText('-4.0% compared with this day last week')).toBeInTheDocument();
+    expect(screen.getByText('- compared with a usual day')).toBeInTheDocument();
+    expect(screen.getByText('92% of sales matched to products')).toBeInTheDocument();
     expect(screen.getByText('No sales data')).toBeInTheDocument();
     expect(screen.getByTestId('hour-chart')).toHaveAttribute('data-count', '24');
     expect(screen.getByText('2519****5678')).toBeInTheDocument();
@@ -195,12 +199,12 @@ describe('dashboard', () => {
   it('switches week and month to the previous period', async () => {
     const user = userEvent.setup();
     renderDashboard();
-    await screen.findByText('+12.5% vs yesterday');
+    await screen.findByText('+12.5% compared with yesterday');
     await user.click(screen.getByRole('radio', { name: 'This week' }));
-    expect(await screen.findByText('-20.0% vs previous period')).toBeInTheDocument();
-    expect(screen.queryByText(/vs yesterday/)).not.toBeInTheDocument();
+    expect(await screen.findByText('-20.0% compared with last time')).toBeInTheDocument();
+    expect(screen.queryByText(/compared with yesterday/)).not.toBeInTheDocument();
     await user.click(screen.getByRole('radio', { name: 'This month' }));
-    expect(await screen.findByText('-20.0% vs previous period')).toBeInTheDocument();
+    expect(await screen.findByText('-20.0% compared with last time')).toBeInTheDocument();
     expect(getDashboardMock).toHaveBeenCalledWith('week');
     expect(getDashboardMock).toHaveBeenCalledWith('month');
   });
@@ -280,7 +284,7 @@ describe('dashboard', () => {
     getStockMock.mockResolvedValue([]);
     listTransactionsMock.mockResolvedValue(page([], null));
     renderDashboard();
-    expect(await screen.findByText('No item sales yet.')).toBeInTheDocument();
+    expect(await screen.findByText('No product sales yet.')).toBeInTheDocument();
     expect(screen.getByText('No stock to show.')).toBeInTheDocument();
     expect(screen.getByText('No sales yet.')).toBeInTheDocument();
   });

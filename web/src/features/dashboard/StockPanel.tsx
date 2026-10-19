@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ProductMark } from '../../components/ProductMark';
 import type { Locale, StockItem } from '../../shared/types';
@@ -15,9 +16,15 @@ const badgeKey = {
   ok: 'stockOk',
 } as const;
 
+const PAGE = 7;
+
 export function StockPanel({ items, locale }: { items: StockItem[]; locale: Locale }) {
-  const { t } = useTranslation('dashboard');
+  const { t } = useTranslation(['dashboard', 'common']);
+  const [page, setPage] = useState(0);
   const attention = items.filter((item) => item.status === 'low' || item.status === 'out');
+  const pages = Math.max(1, Math.ceil(items.length / PAGE));
+  const safePage = Math.min(page, pages - 1);
+  const visible = items.slice(safePage * PAGE, safePage * PAGE + PAGE);
   return (
     <section aria-label={t('stock')} className="grid gap-3">
       <h2 className="text-sm font-bold">{t('stock')}</h2>
@@ -43,7 +50,7 @@ export function StockPanel({ items, locale }: { items: StockItem[]; locale: Loca
       ) : null}
       {items.length > 0 ? (
         <ul className="overflow-hidden rounded-card border border-line bg-surface">
-          {items.map((item) => {
+          {visible.map((item) => {
             const name = localizedName(item, locale);
             return (
               <li
@@ -68,6 +75,26 @@ export function StockPanel({ items, locale }: { items: StockItem[]; locale: Loca
             );
           })}
         </ul>
+      ) : null}
+      {items.length > PAGE ? (
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            className="min-h-12 rounded-xl border border-line bg-surface text-sm font-bold disabled:opacity-40"
+            disabled={safePage === 0}
+            onClick={() => setPage(safePage - 1)}
+          >
+            {t('common:previous')}
+          </button>
+          <button
+            type="button"
+            className="min-h-12 rounded-xl border border-line bg-surface text-sm font-bold disabled:opacity-40"
+            disabled={safePage >= pages - 1}
+            onClick={() => setPage(safePage + 1)}
+          >
+            {t('common:next')}
+          </button>
+        </div>
       ) : null}
     </section>
   );

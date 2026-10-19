@@ -1,12 +1,11 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
 import i18n from '../i18n';
-import { useLocaleStore } from '../store/locale';
-import { formatMoney } from '../utils/format';
 import type { SaleFailure } from '../features/sale/errors';
 import { cartTotal, isFinalStatus } from '../features/sale/logic';
 import { SaleCatalog } from '../features/sale/SaleCatalog';
+import { SaleCheckout } from '../features/sale/SaleCheckout';
 import { SaleHero } from '../features/sale/SaleHero';
 import { SaleResult } from '../features/sale/SaleResult';
 import { useSaleScreen } from '../features/sale/useSaleScreen';
@@ -33,11 +32,17 @@ function failureText(failure: SaleFailure): string {
 
 export function SalePage() {
   const { t } = useTranslation('sale');
-  const locale = useLocaleStore((state) => state.locale);
   const screen = useSaleScreen();
+  const [step, setStep] = useState<'cart' | 'pay' | null>(null);
   const total = cartTotal(screen.lines);
   const sale = screen.sale;
   const showSale = Boolean(screen.requestId);
+
+  useEffect(() => {
+    if (screen.lines.length === 0) {
+      setStep(null);
+    }
+  }, [screen.lines.length]);
 
   return (
     <section className={screen.lines.length > 0 && !showSale ? 'pb-24' : undefined}>
@@ -72,44 +77,51 @@ export function SalePage() {
             onAdd={screen.add}
             onChange={screen.change}
           />
-          <div className="mt-4 grid gap-3">
-            <Input
-              label={t('phone')}
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              value={screen.phone}
-              onChange={(event) => screen.setPhone(event.target.value)}
-              error={screen.phoneError ? t('phoneInvalid') : undefined}
-            />
-            {screen.limitReached ? (
-              <p className="text-sm font-semibold text-warning">{t('lineLimit')}</p>
-            ) : null}
-            {screen.failure ? (
-              <p role="alert" className="text-sm font-semibold text-danger">
-                {failureText(screen.failure)}
-              </p>
-            ) : null}
-            <Button
-              loading={screen.requesting}
-              disabled={screen.lines.length === 0}
-              onClick={screen.submit}
-            >
-              {t('request')}
-            </Button>
-          </div>
+          <SaleCheckout
+            step={step}
+            products={screen.products.data ?? []}
+            lines={screen.lines}
+            total={total}
+            phone={screen.phone}
+            phoneError={screen.phoneError ? t('phoneInvalid') : undefined}
+            limitReached={screen.limitReached ? t('lineLimit') : undefined}
+            failure={screen.failure ? failureText(screen.failure) : undefined}
+            requesting={screen.requesting}
+            onClose={() => setStep(null)}
+            onBack={() => setStep('cart')}
+            onContinue={() => setStep('pay')}
+            onChange={screen.change}
+            onPhone={screen.setPhone}
+            onPhoneBlur={screen.blurPhone}
+            onSubmit={screen.submit}
+          />
           {screen.lines.length > 0 ? (
-            <div className="fixed bottom-[calc(84px+env(safe-area-inset-bottom))] left-1/2 z-20 flex h-[58px] w-[calc(100%-2rem)] max-w-[388px] -translate-x-1/2 items-center gap-3 rounded-[15px] bg-[#173D2C] px-4 text-primary-foreground shadow-[0_12px_30px_rgba(22,60,43,0.27)]">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-[#2D644C] text-sm font-bold">
+            <button
+              type="button"
+              aria-label={t('viewCart')}
+              className="fixed bottom-[calc(84px+env(safe-area-inset-bottom))] left-1/2 z-20 flex h-[58px] w-[calc(100%-2rem)] max-w-[388px] -translate-x-1/2 items-center gap-3 rounded-[15px] bg-[#173D2C] px-4 text-left text-primary-foreground shadow-[0_12px_30px_rgba(22,60,43,0.27)]"
+              onClick={() => setStep('cart')}
+            >
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#2D644C] text-sm font-bold">
                 {screen.lines.reduce((sum, line) => sum + line.qty, 0)}
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-[11px] text-[#ACD1BE]">{t('total')}</span>
-                <span className="block text-base font-bold tabular-nums">
-                  {formatMoney(total, locale)}
-                </span>
+                <span className="block text-[11px] text-[#ACD1BE]">{t('currentSale')}</span>
+                <span className="block text-sm font-bold">{t('viewCart')}</span>
               </span>
-            </div>
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="h-5 w-5 shrink-0"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M5 12h14M14 7l5 5-5 5" />
+              </svg>
+            </button>
           ) : null}
         </>
       ) : null}

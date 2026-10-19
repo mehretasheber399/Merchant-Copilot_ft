@@ -8,7 +8,7 @@ import { ProductList } from '../features/items/ProductList';
 import { StarterSheet } from '../features/items/StarterSheet';
 import { useDebounced } from '../hooks/useDebounced';
 import { useOnline } from '../hooks/useOnline';
-import { useDeleteProduct, useProductList } from '../hooks/useProducts';
+import { useDeleteProduct, useProductList, useUpdateProduct } from '../hooks/useProducts';
 import i18n from '../i18n';
 import type { ProductView } from '../shared/types';
 
@@ -26,11 +26,13 @@ export function ItemsPage() {
   const debounced = useDebounced(search.trim(), 300);
   const products = useProductList(debounced);
   const remove = useDeleteProduct();
+  const update = useUpdateProduct();
   const [editing, setEditing] = useState<ProductView | null | undefined>(undefined);
   const [pendingDelete, setPendingDelete] = useState<ProductView | null>(null);
   const [starterOpen, setStarterOpen] = useState(false);
   const [notice, setNotice] = useState('');
   const [deleteError, setDeleteError] = useState('');
+  const [stockError, setStockError] = useState('');
 
   const showStarter = !debounced && products.data?.length === 0;
 
@@ -166,6 +168,11 @@ export function ItemsPage() {
       {products.data && products.data.length === 0 && debounced ? (
         <p className="mt-6">{t('noResults')}</p>
       ) : null}
+      {stockError ? (
+        <p role="alert" className="mt-3 text-sm font-semibold text-danger">
+          {stockError}
+        </p>
+      ) : null}
       {products.data && products.data.length > 0 ? (
         <ProductList
           products={products.data}
@@ -173,6 +180,13 @@ export function ItemsPage() {
           onDelete={(product) => {
             setDeleteError('');
             setPendingDelete(product);
+          }}
+          onStock={(product, delta) => {
+            const next = Math.max(0, (product.stock ?? 0) + delta);
+            setStockError('');
+            void update.mutateAsync({ id: product.id, patch: { stock: next } }).catch(() => {
+              setStockError(i18n.t('errors:generic'));
+            });
           }}
         />
       ) : null}

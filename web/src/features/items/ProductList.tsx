@@ -23,10 +23,12 @@ export function ProductList({
   products,
   onEdit,
   onDelete,
+  onStock,
 }: {
   products: ProductView[];
   onEdit: (product: ProductView) => void;
   onDelete: (product: ProductView) => void;
+  onStock: (product: ProductView, delta: number) => void;
 }) {
   const { t } = useTranslation('items');
   const locale = useLocaleStore((state) => state.locale);
@@ -53,23 +55,45 @@ export function ProductList({
                   {product.category.trim() ? ` · ${product.category}` : ''}
                 </span>
               </span>
-              <span className={`shrink-0 text-right ${stockClass[product.stockStatus]}`}>
-                <span className="block text-sm font-bold">
-                  {product.stock !== undefined ? product.stock : '–'}
-                </span>
-                <span data-stock={product.stockStatus} className="block text-[11px] font-semibold">
-                  {t(stockKey[product.stockStatus])}
-                </span>
+              <span
+                data-stock={product.stockStatus}
+                className={`shrink-0 text-[11px] font-semibold ${stockClass[product.stockStatus]}`}
+              >
+                {t(stockKey[product.stockStatus])}
               </span>
             </button>
-            <button
-              type="button"
-              className="inline-flex h-12 shrink-0 items-center justify-center rounded-[10px] bg-danger-soft px-3 text-sm font-bold text-danger"
-              aria-label={`${t('remove')} ${name}`}
-              onClick={() => onDelete(product)}
-            >
-              {t('remove')}
-            </button>
+            <div className="flex shrink-0 items-center gap-1">
+              <div className="grid h-12 grid-cols-[48px_2rem_48px] items-center rounded-full bg-canvas text-ink">
+                <button
+                  type="button"
+                  className="grid h-12 place-items-center text-xl font-bold disabled:opacity-40"
+                  aria-label={t('decreaseStock', { name })}
+                  disabled={(product.stock ?? 0) <= 0}
+                  onClick={() => onStock(product, -1)}
+                >
+                  −
+                </button>
+                <span className="text-center text-sm font-bold tabular-nums">
+                  {product.stock !== undefined ? product.stock : '–'}
+                </span>
+                <button
+                  type="button"
+                  className="grid h-12 place-items-center text-xl font-bold"
+                  aria-label={t('increaseStock', { name })}
+                  onClick={() => onStock(product, 1)}
+                >
+                  +
+                </button>
+              </div>
+              <button
+                type="button"
+                className="grid h-12 w-12 place-items-center rounded-[10px] text-xl font-bold text-muted"
+                aria-label={t('options', { name })}
+                onClick={() => onDelete(product)}
+              >
+                ⋯
+              </button>
+            </div>
           </li>
         );
       })}

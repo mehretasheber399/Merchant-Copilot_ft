@@ -181,6 +181,30 @@ export function mappingKind(source: MappingSource | undefined): MappingKind {
   return 'review';
 }
 
+export function sellingProfit(
+  sold: { productId: string; qty: number; revenue: number }[],
+  costs: { id: string; cost?: number }[],
+): { amount: number; partial: boolean } | null {
+  if (sold.length === 0 || costs.length === 0) {
+    return null;
+  }
+  const costOf = new Map(costs.map((product) => [product.id, product.cost]));
+  let amount = 0;
+  let known = 0;
+  for (const row of sold) {
+    const cost = costOf.get(row.productId);
+    if (typeof cost !== 'number') {
+      continue;
+    }
+    known += 1;
+    amount += row.revenue - cost * row.qty;
+  }
+  if (known === 0) {
+    return null;
+  }
+  return { amount, partial: known < sold.length };
+}
+
 export function localizedName(
   item: { name?: string; nameAm?: string },
   locale: 'en' | 'am',

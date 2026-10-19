@@ -30,11 +30,22 @@ function DeltaLine({ delta, onDark = false }: { delta: DeltaView; onDark?: boole
   );
 }
 
-function Tile({ label, value, deltas }: { label: string; value: string; deltas: DeltaView[] }) {
+function Tile({
+  label,
+  value,
+  deltas,
+  hint,
+}: {
+  label: string;
+  value: string;
+  deltas: DeltaView[];
+  hint?: string;
+}) {
   return (
     <section aria-label={label} className="rounded-card border border-line bg-surface p-4">
       <h2 className="text-xs font-semibold text-muted">{label}</h2>
       <p className="mt-1 text-xl font-extrabold tabular-nums leading-none">{value}</p>
+      {hint ? <p className="mt-2 text-xs text-muted">{hint}</p> : null}
       <div className="mt-2 grid gap-1">
         {deltas.map((delta) => (
           <DeltaLine key={delta.id} delta={delta} />
@@ -44,7 +55,15 @@ function Tile({ label, value, deltas }: { label: string; value: string; deltas: 
   );
 }
 
-export function KpiTiles({ model, locale }: { model: KpiModel; locale: Locale }) {
+export function KpiTiles({
+  model,
+  locale,
+  profit,
+}: {
+  model: KpiModel;
+  locale: Locale;
+  profit: { amount: number; partial: boolean } | null;
+}) {
   const { t } = useTranslation('dashboard');
   const tone = coverageTone(model.coveragePct);
   const pill =
@@ -98,8 +117,9 @@ export function KpiTiles({ model, locale }: { model: KpiModel; locale: Locale })
         <Tile label={t('transactions')} value={String(model.count)} deltas={[model.countDelta]} />
         <Tile
           label={t('average')}
-          value={formatMoney(model.average, locale)}
-          deltas={[model.averageDelta]}
+          value={profit ? formatMoney(profit.amount, locale) : '—'}
+          deltas={[]}
+          hint={profit ? (profit.partial ? t('profitRough') : undefined) : t('profitHint')}
         />
       </div>
       <p className={`rounded-xl px-3 py-2 text-sm font-semibold ${pill}`}>

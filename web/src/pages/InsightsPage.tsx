@@ -4,7 +4,6 @@ import { BriefingCard } from '../features/insights/BriefingCard';
 import { EvidenceDrawer } from '../features/insights/EvidenceDrawer';
 import { InsightCards } from '../features/insights/InsightCards';
 import { sortInsights } from '../features/insights/logic';
-import { ReviewList } from '../features/insights/ReviewList';
 import { useInsightsScreen } from '../features/insights/useInsightsScreen';
 import i18n from '../i18n';
 import { useLocaleStore } from '../store/locale';
@@ -30,18 +29,6 @@ export function InsightsPage() {
   return (
     <section className="grid gap-4" aria-busy={screen.insights.isFetching || undefined}>
       <h1 className="sr-only">{t('title')}</h1>
-      <Button
-        variant="secondary"
-        loading={screen.refresh.isPending}
-        onClick={() => screen.refresh.mutate()}
-      >
-        {t('refresh')}
-      </Button>
-      {screen.refresh.isError ? (
-        <p role="alert" className="font-semibold text-danger">
-          {i18n.t('errors:network')}
-        </p>
-      ) : null}
       {!screen.online && !payload ? (
         <p role="status" className="font-semibold text-warning">
           {i18n.t('common:offline')}
@@ -64,18 +51,6 @@ export function InsightsPage() {
           />
         </>
       ) : null}
-      <ReviewList
-        locale={locale}
-        online={screen.online}
-        review={screen.unmapped}
-        products={screen.products}
-        editingId={screen.editingId}
-        onEdit={screen.setEditingId}
-        confirm={screen.confirm}
-        confirmError={screen.confirmErrorKey}
-        dismiss={screen.dismiss}
-        dismissErrorKey={screen.dismissErrorKey}
-      />
       <EvidenceDrawer
         open={Boolean(screen.evidenceId)}
         locale={locale}

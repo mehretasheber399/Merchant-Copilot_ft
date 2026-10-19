@@ -116,8 +116,9 @@ export function SaleCatalog({
                   data-stock={product.stockStatus}
                   className={`text-right text-[11px] font-semibold ${stockClass[product.stockStatus]}`}
                 >
-                  {product.stock !== undefined ? product.stock : ''}{' '}
-                  {t(`items:${stockKey[product.stockStatus]}`)}
+                  {product.stockStatus === 'out'
+                    ? t('items:stockOut')
+                    : `${product.stock !== undefined ? `${product.stock} ` : ''}${t(`items:${stockKey[product.stockStatus]}`)}`}
                 </span>
               </div>
               <p className="mt-3 truncate text-sm font-bold">{name}</p>

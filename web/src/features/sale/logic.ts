@@ -13,11 +13,10 @@ const FINAL: ReadonlySet<SaleStatus> = new Set([
   'INSUFFICIENT',
 ]);
 
-const PHONE =
-  /^(?:07\d{8}|09\d{8}|\+2517\d{8}|\+2519\d{8}|2517\d{8}|2519\d{8}|2517\d{9}|2519\d{9})$/;
+const PHONE = /^(?:0[79]\d{8}|\+251[79]\d{8}|251[79]\d{8})$/;
 
 export function isValidPhone(value: string): boolean {
-  return PHONE.test(value.trim());
+  return PHONE.test(value.trim().replace(/[\s-]/g, ''));
 }
 
 export function cartTotal(lines: { price: number; qty: number }[]): number {

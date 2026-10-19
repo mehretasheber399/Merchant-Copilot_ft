@@ -8,6 +8,8 @@ const FOCUSABLE =
 export function Sheet({
   open,
   title,
+  subtitle,
+  onBack,
   onClose,
   swipeClose = false,
   preferField = true,
@@ -15,6 +17,8 @@ export function Sheet({
 }: {
   open: boolean;
   title: string;
+  subtitle?: string;
+  onBack?: () => void;
   onClose: () => void;
   swipeClose?: boolean;
   preferField?: boolean;
@@ -110,13 +114,37 @@ export function Sheet({
       >
         <div onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
           <div className="mx-auto mb-2 h-1 w-10 rounded-full bg-line" aria-hidden="true" />
-          <div className="mb-4 flex items-center justify-between gap-3 border-b border-line pb-3">
-            <h2 id={titleId} className="text-lg font-bold tracking-tight">
-              {title}
-            </h2>
+          <div className="mb-4 flex items-center gap-2 border-b border-line pb-3">
+            {onBack ? (
+              <button
+                type="button"
+                className="grid h-12 w-12 shrink-0 place-items-center rounded-[10px] bg-canvas text-ink"
+                aria-label={t('back')}
+                onClick={onBack}
+              >
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M15 6 9 12l6 6" />
+                </svg>
+              </button>
+            ) : null}
+            <div className="min-w-0 flex-1">
+              <h2 id={titleId} className="text-lg font-bold tracking-tight">
+                {title}
+              </h2>
+              {subtitle ? <p className="text-sm text-muted">{subtitle}</p> : null}
+            </div>
             <button
               type="button"
-              className="grid h-12 w-12 place-items-center rounded-[10px] bg-canvas text-muted"
+              className="grid h-12 w-12 shrink-0 place-items-center rounded-[10px] bg-canvas text-muted"
               aria-label={t('close')}
               onClick={onClose}
             >

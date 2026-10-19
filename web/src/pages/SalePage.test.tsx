@@ -102,9 +102,15 @@ function renderSale() {
   );
 }
 
+async function openPayment(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole('button', { name: 'View cart' }));
+  await user.click(screen.getByRole('button', { name: 'Continue to payment' }));
+}
+
 async function fillSale(user: ReturnType<typeof userEvent.setup>) {
   await user.click(await screen.findByRole('button', { name: 'Add' }));
   await user.click(screen.getByRole('button', { name: 'Increase Sugar' }));
+  await openPayment(user);
   await user.type(screen.getByLabelText('Customer phone'), '0912345678');
 }
 
@@ -159,6 +165,7 @@ describe('sale screen', () => {
     const user = userEvent.setup();
     renderSale();
     await user.click(await screen.findByRole('button', { name: 'Add' }));
+    await openPayment(user);
     await user.type(screen.getByLabelText('Customer phone'), '0812345678');
     await user.click(screen.getByRole('button', { name: 'Request payment' }));
     expect(screen.getByText('Enter a valid M-PESA number.')).toBeInTheDocument();

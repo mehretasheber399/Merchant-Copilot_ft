@@ -150,6 +150,7 @@ export function filenameFromDisposition(header: string | null): string {
 export async function downloadAuthorized(
   path: string,
   timeoutMs = REQUEST_TIMEOUT_MS,
+  lang?: 'en' | 'am',
 ): Promise<{ blob: Blob; filename: string }> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -158,6 +159,7 @@ export async function downloadAuthorized(
     const response = await fetch(`${config.apiBaseUrl}${path}`, {
       headers: {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(lang ? { 'Accept-Language': lang } : {}),
       },
       signal: controller.signal,
     });

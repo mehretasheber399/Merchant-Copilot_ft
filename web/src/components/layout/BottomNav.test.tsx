@@ -17,12 +17,12 @@ describe('bottom nav', () => {
     );
 
     expect(screen.getByRole('link', { name: 'Sale' })).toHaveAttribute('href', '/sale');
-    expect(screen.getByRole('link', { name: 'Items' })).toHaveAttribute('href', '/items');
+    expect(screen.getByRole('link', { name: 'Products' })).toHaveAttribute('href', '/items');
     expect(screen.getByRole('link', { name: 'Dashboard' })).toHaveAttribute('href', '/dashboard');
     expect(screen.getByRole('link', { name: 'Insights' })).toHaveAttribute('href', '/insights');
     expect(screen.getByRole('link', { name: 'Dashboard' })).toHaveAttribute('aria-current', 'page');
 
-    await userEvent.click(screen.getByRole('link', { name: 'Items' }));
-    expect(screen.getByRole('link', { name: 'Items' })).toHaveAttribute('aria-current', 'page');
+    await userEvent.click(screen.getByRole('link', { name: 'Products' }));
+    expect(screen.getByRole('link', { name: 'Products' })).toHaveAttribute('aria-current', 'page');
   });
 });

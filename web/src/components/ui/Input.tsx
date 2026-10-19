@@ -22,7 +22,7 @@ export function Input({ label, error, hint, type, ...props }: InputProps) {
         <input
           id={id}
           type={secret && shown ? 'text' : type}
-          className={`min-h-12 w-full rounded-xl border border-line bg-surface px-3 text-base font-medium outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(8,122,73,0.12)] ${secret ? 'pr-12' : ''}`}
+          className={`min-h-12 w-full rounded-xl border bg-surface px-3 text-base font-medium outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(8,122,73,0.12)] ${error ? 'border-danger' : 'border-line'} ${secret ? 'pr-12' : ''}`}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy || undefined}
           {...props}
@@ -44,7 +44,7 @@ export function Input({ label, error, hint, type, ...props }: InputProps) {
         </span>
       ) : null}
       {error ? (
-        <span id={errorId} className="text-sm font-medium text-danger">
+        <span id={errorId} role="alert" className="text-sm font-medium text-danger">
           {error}
         </span>
       ) : null}

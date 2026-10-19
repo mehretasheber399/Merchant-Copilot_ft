@@ -3,6 +3,7 @@ import { Button } from '../components/ui/Button';
 import { RangeSwitcher } from '../features/dashboard/RangeSwitcher';
 import { ReportPreview } from '../features/reports/ReportPreview';
 import { useReportsScreen } from '../features/reports/useReportsScreen';
+import { useProductList } from '../hooks/useProducts';
 import i18n from '../i18n';
 import { useLocaleStore } from '../store/locale';
 
@@ -21,10 +22,36 @@ export function ReportsPage() {
   const { t } = useTranslation('reports');
   const locale = useLocaleStore((state) => state.locale);
   const screen = useReportsScreen();
+  const catalog = useProductList('');
 
   return (
     <section className="grid gap-4" aria-busy={screen.report.isFetching || undefined}>
-      <h1 className="sr-only">{t('title')}</h1>
+      <div className="flex items-center justify-end">
+        <h1 className="sr-only">{t('title')}</h1>
+        <button
+          type="button"
+          className="grid h-12 w-12 place-items-center rounded-xl border border-line bg-surface text-ink disabled:opacity-60"
+          aria-label={t('download')}
+          aria-busy={screen.downloading === 'pdf' || undefined}
+          disabled={screen.downloading !== null}
+          onClick={() => screen.download('pdf')}
+        >
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            className="h-5 w-5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 4v10" />
+            <path d="m8 10 4 4 4-4" />
+            <path d="M5 19h14" />
+          </svg>
+        </button>
+      </div>
       <RangeSwitcher range={screen.range} onChange={screen.setRange} />
       {!screen.online && !screen.report.data ? (
         <p role="status" className="font-semibold text-warning">
@@ -38,30 +65,14 @@ export function ReportsPage() {
           <Button onClick={screen.retry}>{i18n.t('errors:retry')}</Button>
         </div>
       ) : null}
-      {screen.report.data ? <ReportPreview report={screen.report.data} locale={locale} /> : null}
-      <div className="grid grid-cols-2 gap-2">
-        <Button
-          variant="secondary"
-          loading={screen.downloading === 'csv'}
-          disabled={screen.downloading !== null}
-          onClick={() => screen.download('csv')}
-        >
-          {t('csv')}
-        </Button>
-        <Button
-          variant="secondary"
-          loading={screen.downloading === 'pdf'}
-          disabled={screen.downloading !== null}
-          onClick={() => screen.download('pdf')}
-        >
-          {t('pdf')}
-        </Button>
-        {screen.downloadError ? (
-          <p role="alert" className="col-span-2 font-semibold text-danger">
-            {screen.errorText}
-          </p>
-        ) : null}
-      </div>
+      {screen.report.data ? (
+        <ReportPreview report={screen.report.data} locale={locale} catalog={catalog.data ?? []} />
+      ) : null}
+      {screen.downloadError ? (
+        <p role="alert" className="font-semibold text-danger">
+          {screen.errorText}
+        </p>
+      ) : null}
     </section>
   );
 }

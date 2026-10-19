@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event';
 import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ApiError } from '../api/client';
 import {
   dismissTransactionMapping,
   getInsightEvidence,
@@ -16,7 +15,7 @@ import {
 } from '../api/endpoints';
 import { ToastViewport } from '../components/ui/Toast';
 import i18n from '../i18n';
-import type { InsightsPayload, ProductView, UnmappedTransaction } from '../shared/types';
+import type { InsightsPayload, ProductView } from '../shared/types';
 import { useAuthStore } from '../store/auth';
 import { useLocaleStore } from '../store/locale';
 import { useToastStore } from '../store/toast';
@@ -124,25 +123,6 @@ function sugar(): ProductView {
   };
 }
 
-function payment(
-  partial: Partial<UnmappedTransaction> & Pick<UnmappedTransaction, 'id'>,
-): UnmappedTransaction {
-  return {
-    amount: 250,
-    timestamp: '2026-10-18T09:00:00.000Z',
-    externalReference: 'ref',
-    mappingSource: 'unmapped',
-    phoneMasked: '2519****5678',
-    suggestion: {
-      items: [{ productId: 'p1', name: 'Sugar', qty: 1 }],
-      total: 250,
-      exact: true,
-      score: 1,
-    },
-    ...partial,
-  };
-}
-
 function renderInsights() {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
@@ -199,87 +179,36 @@ describe('insights', () => {
     expect(screen.getByText('AI')).toBeInTheDocument();
     const titles = screen.getAllByRole('heading', { level: 2 }).map((node) => node.textContent);
     expect(titles.indexOf('Oil is running out')).toBeLessThan(titles.indexOf('Sales look unusual'));
-    expect(screen.getAllByText('Why it matters')).toHaveLength(2);
-    expect(screen.getAllByText('What to check')).toHaveLength(2);
+    expect(screen.queryByText('Why it matters')).not.toBeInTheDocument();
+    expect(screen.getByText('Count the bottles.')).toBeInTheDocument();
     expect(screen.getByText('Buy more oil today.')).toBeInTheDocument();
-    expect(screen.getByText('High').className).toContain('border-solid');
-    expect(screen.getByText('Estimate').className).toContain('border-dashed');
-    expect(screen.getAllByRole('button', { name: 'See evidence' })).toHaveLength(1);
+    expect(screen.getByText('Sure').className).toContain('border-solid');
+    expect(screen.getByText('Rough figure').className).toContain('border-dashed');
+    expect(screen.getAllByRole('button', { name: 'See the numbers' })).toHaveLength(1);
 
     useLocaleStore.getState().setLocale('am');
     expect(await screen.findByText('ዘይት እያለቀ ነው')).toBeInTheDocument();
     expect(screen.getByText('ሽያጭ ያልተለመደ ይመስላል')).toBeInTheDocument();
-    expect(screen.getAllByText('ለምን አስፈላጊ ነው').length).toBeGreaterThan(0);
+    expect(screen.getByText('ጠርሙሶቹን ይቁጠሩ።')).toBeInTheDocument();
     expect(screen.getByText('ገቢ ጨምሯል።')).toBeInTheDocument();
   });
 
   it('opens the evidence drawer, focuses it, and closes with Escape', async () => {
     const user = userEvent.setup();
     renderInsights();
-    await screen.findByRole('button', { name: 'See evidence' });
-    await user.click(screen.getByRole('button', { name: 'See evidence' }));
-    const dialog = await screen.findByRole('dialog', { name: 'Evidence' });
+    await screen.findByRole('button', { name: 'See the numbers' });
+    await user.click(screen.getByRole('button', { name: 'See the numbers' }));
+    const dialog = await screen.findByRole('dialog', { name: 'The numbers' });
     expect(dialog.contains(document.activeElement)).toBe(true);
-    expect(await screen.findByText('Items at risk')).toBeInTheDocument();
-    expect(screen.getByText('Oil')).toBeInTheDocument();
-    expect(screen.getByText('250 ETB')).toBeInTheDocument();
-    expect(screen.getByText('Oil × 1')).toBeInTheDocument();
+    expect(within(dialog).getByText('Items at risk')).toBeInTheDocument();
+    expect(within(dialog).getByText('Oil')).toBeInTheDocument();
+    expect(within(dialog).getByText('250 ETB')).toBeInTheDocument();
+    expect(within(dialog).getByText('Oil × 1')).toBeInTheDocument();
     await user.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('shows a total mismatch, an already-matched payment, and dismisses a row', async () => {
-    const user = userEvent.setup();
-    listUnmappedMock.mockResolvedValue([
-      payment({ id: 'bad' }),
-      payment({ id: 'taken' }),
-      payment({ id: 'gone', suggestion: null, amount: 80 }),
-    ]);
-    mapTransactionMock.mockImplementation(async (id) => {
-      if (id === 'bad') {
-        throw new ApiError({ code: 'VALIDATION_ERROR', message: 'no', status: 400 });
-      }
-      throw new ApiError({ code: 'CONFLICT', message: 'no', status: 409 });
-    });
-    renderInsights();
-    expect(await screen.findAllByText('2519****5678')).toHaveLength(3);
-    const confirms = await screen.findAllByRole('button', { name: 'Confirm' });
-    await user.click(confirms[0]!);
-    expect(await screen.findByText("Items don't add up to the payment.")).toBeInTheDocument();
-    await user.click(screen.getAllByRole('button', { name: 'Confirm' })[1]!);
-    expect(await screen.findByText('Already matched.')).toBeInTheDocument();
-    expect(screen.getByText('No match found')).toBeInTheDocument();
-
-    const dismissButtons = screen.getAllByRole('button', { name: 'Dismiss' });
-    await user.click(dismissButtons[2]!);
-    const ask = screen.getByText('Remove this payment from review?');
-    await user.click(
-      within(ask.parentElement as HTMLElement).getByRole('button', { name: 'Dismiss' }),
-    );
-    expect(dismissMock).toHaveBeenCalledWith('gone');
-  });
-
-  it('confirms an edited basket only when the total matches', async () => {
-    const user = userEvent.setup();
-    listUnmappedMock.mockResolvedValue([payment({ id: 'edit-1', amount: 500, suggestion: null })]);
-    const client = renderInsights();
-    const invalidate = vi.spyOn(client, 'invalidateQueries');
-    await user.click(await screen.findByRole('button', { name: 'Edit items' }));
-    await user.selectOptions(await screen.findByLabelText('Add item'), 'p1');
-    expect(screen.getByRole('button', { name: 'Confirm' })).toBeDisabled();
-    await user.click(screen.getByRole('button', { name: 'Increase Sugar' }));
-    expect(screen.getByText('500 ETB of 500 ETB')).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Confirm' }));
-    expect(await screen.findByText('Payment matched to items')).toBeInTheDocument();
-    expect(mapTransactionMock).toHaveBeenCalledWith('edit-1', [{ productId: 'p1', qty: 2 }]);
-    expect(invalidate).toHaveBeenCalledWith({ queryKey: ['insights'] });
-    expect(invalidate).toHaveBeenCalledWith({ queryKey: ['stock'] });
-    expect(invalidate).toHaveBeenCalledWith({ queryKey: ['dashboard'] });
-    expect(invalidate).toHaveBeenCalledWith({ queryKey: ['transactions'] });
-  });
-
-  it('shows empty states, refreshes, and refetches on live events', async () => {
-    const user = userEvent.setup();
+  it('shows an empty state and refetches on a live insight event', async () => {
     getInsightsMock.mockResolvedValue(
       payload([
         {
@@ -296,14 +225,9 @@ describe('insights', () => {
     });
     useAuthStore.getState().setSession('tok', { id: 'm1', businessName: 'Shop' });
     renderInsights();
-    expect(
-      await screen.findByText('No insights yet. Refresh after a few sales.'),
-    ).toBeInTheDocument();
-    expect(screen.getByText('No payments need review.')).toBeInTheDocument();
-
-    refreshInsightsMock.mockResolvedValue(payload(cards()));
-    await user.click(screen.getByRole('button', { name: 'Refresh' }));
-    expect(await screen.findByText('Oil is running out')).toBeInTheDocument();
+    expect(await screen.findByText('No insights yet. Make a few sales first.')).toBeInTheDocument();
+    expect(screen.queryByText('No payments need review.')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Refresh' })).not.toBeInTheDocument();
 
     const calls = getInsightsMock.mock.calls.length;
     act(() => {
@@ -312,16 +236,5 @@ describe('insights', () => {
     await vi.waitFor(() => {
       expect(getInsightsMock.mock.calls.length).toBeGreaterThan(calls);
     });
-
-    listUnmappedMock.mockResolvedValue([payment({ id: 'live' })]);
-    act(() => {
-      FakeEventSource.instances.at(-1)?.emit('sale.updated', {
-        merchantId: 'm1',
-        requestId: 'req',
-        status: 'PAID',
-        amount: 250,
-      });
-    });
-    expect(await screen.findByText('Sugar × 1')).toBeInTheDocument();
   });
 });

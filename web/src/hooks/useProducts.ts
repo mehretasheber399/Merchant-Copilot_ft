@@ -8,7 +8,7 @@ import {
   listProducts,
   updateProduct,
 } from '../api/endpoints';
-import type { CreateProductInput } from '../shared/types';
+import type { CreateProductInput, UpdateProductInput } from '../shared/types';
 
 export function useProductList(search: string) {
   return useQuery({
@@ -41,7 +41,7 @@ export function useCreateProduct() {
 export function useUpdateProduct() {
   const invalidate = useInvalidateProducts();
   return useMutation({
-    mutationFn: (input: { id: string; patch: CreateProductInput }) =>
+    mutationFn: (input: { id: string; patch: UpdateProductInput }) =>
       updateProduct(input.id, input.patch),
     onSuccess: invalidate,
   });

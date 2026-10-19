@@ -7,8 +7,9 @@ import { RangeSwitcher } from '../features/dashboard/RangeSwitcher';
 import { StockPanel } from '../features/dashboard/StockPanel';
 import { TopProducts } from '../features/dashboard/TopProducts';
 import { TransactionFeed } from '../features/dashboard/TransactionFeed';
-import { buildKpis } from '../features/dashboard/logic';
+import { buildKpis, sellingProfit } from '../features/dashboard/logic';
 import { useDashboardScreen } from '../features/dashboard/useDashboardScreen';
+import { useProductList } from '../hooks/useProducts';
 import i18n from '../i18n';
 import { useAuthStore } from '../store/auth';
 import { useLocaleStore } from '../store/locale';
@@ -46,7 +47,9 @@ export function DashboardPage() {
   const locale = useLocaleStore((state) => state.locale);
   const businessName = useAuthStore((state) => state.merchant?.businessName ?? '');
   const screen = useDashboardScreen();
+  const catalog = useProductList('');
   const model = buildKpis(screen.dashboard.data?.range ?? screen.range, screen.dashboard.data);
+  const profit = sellingProfit(screen.products.data ?? [], catalog.data ?? []);
   const busy = screen.dashboard.isFetching;
   const dateLabel = new Intl.DateTimeFormat(locale === 'am' ? 'am-ET' : 'en-GB', {
     timeZone: 'Africa/Addis_Ababa',
@@ -85,7 +88,7 @@ export function DashboardPage() {
       {screen.online && screen.dashboard.isError && !screen.dashboard.data ? (
         <SectionError onRetry={() => void screen.dashboard.refetch()} />
       ) : null}
-      {model ? <KpiTiles model={model} locale={locale} /> : null}
+      {model ? <KpiTiles model={model} locale={locale} profit={profit} /> : null}
       <div className="grid grid-cols-2 gap-3">
         <Link
           to="/sale"
