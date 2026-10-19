@@ -24,7 +24,7 @@ export function ReportsPage() {
 
   return (
     <section className="grid gap-4" aria-busy={screen.report.isFetching || undefined}>
-      <h1 className="text-2xl font-extrabold tracking-tight">{t('title')}</h1>
+      <h1 className="sr-only">{t('title')}</h1>
       <RangeSwitcher range={screen.range} onChange={screen.setRange} />
       {!screen.online && !screen.report.data ? (
         <p role="status" className="font-semibold text-warning">
@@ -39,7 +39,7 @@ export function ReportsPage() {
         </div>
       ) : null}
       {screen.report.data ? <ReportPreview report={screen.report.data} locale={locale} /> : null}
-      <div className="grid gap-2">
+      <div className="grid grid-cols-2 gap-2">
         <Button
           variant="secondary"
           loading={screen.downloading === 'csv'}
@@ -57,7 +57,7 @@ export function ReportsPage() {
           {t('pdf')}
         </Button>
         {screen.downloadError ? (
-          <p role="alert" className="font-semibold text-danger">
+          <p role="alert" className="col-span-2 font-semibold text-danger">
             {screen.errorText}
           </p>
         ) : null}

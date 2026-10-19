@@ -40,10 +40,10 @@ export function SalePage() {
   const showSale = Boolean(screen.requestId);
 
   return (
-    <section className={screen.lines.length > 0 && !showSale ? 'pb-36' : undefined}>
+    <section className={screen.lines.length > 0 && !showSale ? 'pb-24' : undefined}>
       {!showSale ? (
         <>
-          <h1 className="mb-4 text-2xl font-extrabold tracking-tight">{t('title')}</h1>
+          <h1 className="sr-only">{t('title')}</h1>
           <SaleHero />
         </>
       ) : null}
@@ -99,10 +99,15 @@ export function SalePage() {
             </Button>
           </div>
           {screen.lines.length > 0 ? (
-            <div className="fixed bottom-[calc(92px+env(safe-area-inset-bottom))] left-1/2 z-20 flex h-14 w-[calc(100%-2rem)] max-w-[388px] -translate-x-1/2 items-center justify-between rounded-[20px] bg-ink px-5 text-primary-foreground shadow-shell">
-              <span className="text-sm font-semibold">{t('total')}</span>
-              <span className="text-xl font-extrabold tabular-nums">
-                {formatMoney(total, locale)}
+            <div className="fixed bottom-[calc(84px+env(safe-area-inset-bottom))] left-1/2 z-20 flex h-[58px] w-[calc(100%-2rem)] max-w-[388px] -translate-x-1/2 items-center gap-3 rounded-[15px] bg-[#173D2C] px-4 text-primary-foreground shadow-[0_12px_30px_rgba(22,60,43,0.27)]">
+              <span className="grid h-8 w-8 place-items-center rounded-lg bg-[#2D644C] text-sm font-bold">
+                {screen.lines.reduce((sum, line) => sum + line.qty, 0)}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[11px] text-[#ACD1BE]">{t('total')}</span>
+                <span className="block text-base font-bold tabular-nums">
+                  {formatMoney(total, locale)}
+                </span>
               </span>
             </div>
           ) : null}

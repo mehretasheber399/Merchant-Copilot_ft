@@ -5,6 +5,8 @@
     "langEn": "EN",
     "langAm": "አማ",
     "logout": "ውጣ",
+    "showPassword": "የይለፍ ቃል አሳይ",
+    "hidePassword": "የይለፍ ቃል ደብቅ",
     "offline": "ኢንተርኔት የለም።",
     "loading": "በመጫን ላይ",
     "close": "ዝጋ",
@@ -26,9 +28,13 @@
   },
   "auth": {
     "title": "ግባ",
+    "english": "English",
+    "amharic": "አማርኛ",
     "email": "ኢሜይል",
     "password": "የይለፍ ቃል",
     "submit": "ግባ",
+    "signedIn": "ገብተዋል",
+    "continue": "ቀጥል",
     "expired": "ክፍለ ጊዜዎ አልቋል። እንደገና ይግቡ።"
   },
   "errors": {
@@ -79,6 +85,8 @@
   "items": {
     "title": "እቃዎች",
     "search": "እቃ ፈልግ",
+    "summaryProducts": "እቃዎች",
+    "summaryLow": "ዝቅተኛ ክምችት",
     "add": "እቃ ጨምር",
     "edit": "እቃ አርም",
     "save": "አስቀምጥ",

@@ -5,6 +5,8 @@
     "langEn": "EN",
     "langAm": "አማ",
     "logout": "Log out",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
     "offline": "You are offline.",
     "loading": "Loading",
     "close": "Close",
@@ -24,9 +26,13 @@
   },
   "auth": {
     "title": "Sign in",
+    "english": "English",
+    "amharic": "አማርኛ",
     "email": "Email",
     "password": "Password",
     "submit": "Sign in",
+    "signedIn": "You are signed in",
+    "continue": "Continue",
     "expired": "Your session expired. Sign in again."
   },
   "errors": {
@@ -75,6 +81,8 @@
   "items": {
     "title": "Items",
     "search": "Search items",
+    "summaryProducts": "Products",
+    "summaryLow": "Low stock",
     "add": "Add item",
     "edit": "Edit item",
     "save": "Save",

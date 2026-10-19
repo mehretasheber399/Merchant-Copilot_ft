@@ -41,10 +41,9 @@ export function InsightCards({
         return (
           <li
             key={insight.id ?? `${insight.type}-${insight.dateKey}-${index}`}
-            className="min-w-0 overflow-hidden rounded-card border border-line bg-surface"
+            className="min-w-0 rounded-card border border-line bg-surface p-4"
           >
-            <div className="h-1.5 bg-gradient-to-r from-primary-bright to-[#FFB703]" />
-            <div className="p-4">
+            <div>
               <div className="flex items-start gap-3">
                 <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary-soft">
                   <InsightIcon type={insight.type} className="h-6 w-6 shrink-0 text-primary" />

@@ -34,7 +34,10 @@ export function SaleResult({
               </li>
             ))}
           </ul>
-          <p className="text-2xl font-bold text-primary">{formatMoney(sale.amount, locale)}</p>
+          <div className="rounded-[15px] bg-primary px-4 py-5 text-center text-primary-foreground">
+            <p className="text-xs text-[#B9DDC9]">{t('receipt')}</p>
+            <p className="mt-2 text-[28px] font-bold">{formatMoney(sale.amount, locale)}</p>
+          </div>
           {paidAt ? <p>{formatTime(paidAt, locale)}</p> : null}
         </>
       ) : null}

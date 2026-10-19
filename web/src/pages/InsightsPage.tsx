@@ -29,7 +29,7 @@ export function InsightsPage() {
 
   return (
     <section className="grid gap-4" aria-busy={screen.insights.isFetching || undefined}>
-      <h1 className="text-2xl font-extrabold tracking-tight">{t('title')}</h1>
+      <h1 className="sr-only">{t('title')}</h1>
       <Button
         variant="secondary"
         loading={screen.refresh.isPending}

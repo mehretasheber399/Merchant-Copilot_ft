@@ -86,12 +86,8 @@ export function ReviewList({
                   ? messageFor(dismissErrorKey)
                   : null;
           return (
-            <li
-              key={row.id}
-              className="min-w-0 overflow-hidden rounded-card border border-line bg-surface"
-            >
-              <div className="h-1.5 bg-gradient-to-r from-primary-bright to-[#FFB703]" />
-              <div className="p-4">
+            <li key={row.id} className="min-w-0 rounded-card border border-line bg-surface p-4">
+              <div>
                 <p className="font-extrabold tabular-nums text-primary">
                   {formatMoney(row.amount, locale)}
                 </p>

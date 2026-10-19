@@ -3,35 +3,38 @@ import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 
 const tabs = [
-  { to: '/sale', labelKey: 'sale', icon: SaleIcon },
-  { to: '/items', labelKey: 'items', icon: ItemsIcon },
-  { to: '/dashboard', labelKey: 'dashboard', icon: DashboardIcon },
-  { to: '/insights', labelKey: 'insights', icon: InsightsIcon },
+  { to: '/dashboard', labelKey: 'dashboard', ns: 'nav', icon: DashboardIcon },
+  { to: '/sale', labelKey: 'sale', ns: 'nav', icon: SaleIcon },
+  { to: '/items', labelKey: 'items', ns: 'nav', icon: ItemsIcon },
+  { to: '/insights', labelKey: 'insights', ns: 'nav', icon: InsightsIcon },
+  { to: '/reports', labelKey: 'reports', ns: 'common', icon: ReportsIcon },
 ] as const;
 
 export function BottomNav() {
-  const { t } = useTranslation('nav');
+  const { t } = useTranslation(['nav', 'common']);
 
   return (
-    <nav className="fixed bottom-[calc(12px+env(safe-area-inset-bottom))] left-1/2 z-30 flex h-16 w-[calc(100%-2rem)] max-w-[388px] -translate-x-1/2 items-center justify-around rounded-full bg-ink px-2 shadow-shell">
-      <ul className="grid h-full w-full grid-cols-4">
+    <nav className="fixed bottom-0 left-1/2 z-30 w-full max-w-[420px] -translate-x-1/2 border-t border-line bg-white/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
+      <ul className="grid h-[72px] grid-cols-5">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
             <li key={tab.to} className="flex">
               <NavLink
                 to={tab.to}
-                className="flex flex-1 items-center justify-center text-white/75"
+                className="flex flex-1 flex-col items-center justify-center gap-1 text-[11px] font-semibold text-muted"
               >
                 {({ isActive }) => (
-                  <span
-                    className={`flex h-12 min-w-12 items-center justify-center gap-2 rounded-full px-3 ${isActive ? 'bg-primary text-primary-foreground shadow-[0_0_0_6px_rgba(0,107,60,0.28)]' : ''}`}
-                  >
-                    <Icon />
-                    <span className={isActive ? 'text-sm font-semibold' : 'sr-only'}>
-                      {t(tab.labelKey)}
+                  <>
+                    <span
+                      className={`grid h-8 w-8 place-items-center rounded-[10px] ${isActive ? 'bg-primary-soft text-primary' : ''}`}
+                    >
+                      <Icon />
                     </span>
-                  </span>
+                    <span className={isActive ? 'text-primary' : undefined}>
+                      {t(`${tab.ns}:${tab.labelKey}`)}
+                    </span>
+                  </>
                 )}
               </NavLink>
             </li>
@@ -50,7 +53,9 @@ function IconFrame({ children }: { children: ReactNode }) {
       className="h-5 w-5"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
       {children}
     </svg>
@@ -60,8 +65,8 @@ function IconFrame({ children }: { children: ReactNode }) {
 function SaleIcon() {
   return (
     <IconFrame>
-      <path d="M6 6h15l-1.5 9h-12z" />
-      <path d="M6 6 5 3H2" />
+      <path d="M4 7h16l-1.5 12h-13L4 7Z" />
+      <path d="M8 10V6a4 4 0 0 1 8 0v4" />
     </IconFrame>
   );
 }
@@ -69,8 +74,8 @@ function SaleIcon() {
 function ItemsIcon() {
   return (
     <IconFrame>
-      <path d="M4 7h16v12H4z" />
-      <path d="M8 7V5h8v2" />
+      <path d="m12 3 8 4.5v9L12 21l-8-4.5v-9Z" />
+      <path d="m4.3 7.7 7.7 4.4 7.7-4.4M12 21v-9" />
     </IconFrame>
   );
 }
@@ -78,7 +83,8 @@ function ItemsIcon() {
 function DashboardIcon() {
   return (
     <IconFrame>
-      <path d="M4 13h7V4H4zM13 20h7V4h-7zM4 20h7v-5H4z" />
+      <path d="m3 10 9-7 9 7" />
+      <path d="M5 9v11h14V9M9 20v-6h6v6" />
     </IconFrame>
   );
 }
@@ -86,8 +92,16 @@ function DashboardIcon() {
 function InsightsIcon() {
   return (
     <IconFrame>
-      <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" />
-      <circle cx="12" cy="12" r="3" />
+      <path d="M4 19V9M10 19V5M16 19v-7M22 19H2" />
+    </IconFrame>
+  );
+}
+
+function ReportsIcon() {
+  return (
+    <IconFrame>
+      <path d="M6 3h9l4 4v14H6z" />
+      <path d="M14 3v5h5M9 13h6M9 17h6" />
     </IconFrame>
   );
 }
